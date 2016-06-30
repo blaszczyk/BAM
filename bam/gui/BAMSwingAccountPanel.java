@@ -29,11 +29,16 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 	private BAMSwingTwoTable searchTab = new BAMSwingTwoTable( 3 );
 	private BAMSwingTwoTable statsTab = new BAMSwingTwoTable( 3 );
 	
+	private static String searchName = "";
+	private static String searchPurpose = "";
+	private static Date fromDate = new Date();
+	private static Date toDate = fromDate;
+	
 	private JCheckBox bDrawStored;
-	private BAMDateSelect fromDate; 
-	private BAMDateSelect toDate; 
-	private JTextField searchName = new JTextField();
-	private JTextField searchPurpose = new JTextField();
+	private BAMDateSelect dsFromDate; 
+	private BAMDateSelect dsToDate; 
+	private JTextField tfSearchName;
+	private JTextField tfSearchPurpose;
 
 	private JPanel center = new JPanel(); 
 	private Comparator<BAMTransaction> comparator = (t1,t2) -> t2.getDate().compareTo(t1.getDate());
@@ -115,31 +120,31 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 			redraw();
 		});
 		
-		toDate = new BAMDateSelect( BAMDateSelect.GOTO_LAST );
-		toDate.addActionListener( e -> {
+		dsToDate = new BAMDateSelect( toDate, BAMDateSelect.GOTO_LAST );
+		dsToDate.addActionListener( e -> {
 			redraw();
 		});
 		
-		fromDate = new BAMDateSelect( BAMDateSelect.GOTO_FIRST );
-		fromDate.addActionListener( e -> {
+		dsFromDate = new BAMDateSelect( fromDate, BAMDateSelect.GOTO_FIRST );
+		dsFromDate.addActionListener( e -> {
 			redraw();
 		});		
 
 		JPanel datePanel = new JPanel();
 		datePanel.setLayout( new BoxLayout(datePanel,BoxLayout.X_AXIS) );
-		datePanel.add(fromDate);
+		datePanel.add(dsFromDate);
 		datePanel.add( new JLabel( guiSettings.getPhrase("SHOW_TO") + "   ", SwingConstants.RIGHT ) );
-		datePanel.add(toDate);
+		datePanel.add(dsToDate);
 		datePanel.add(Box.createHorizontalGlue() );
 
 		initPreSets();
 		JComboBox<preSet> preSetsBox = new JComboBox<>( preSets );
 		preSetsBox.addActionListener( e -> {
 			int index = preSetsBox.getSelectedIndex();
-			fromDate.setDate( preSets[index].getFromDate() );
-			toDate.setDate( preSets[index].getToDate() );
+			dsFromDate.setDate( preSets[index].getFromDate() );
+			dsToDate.setDate( preSets[index].getToDate() );
 		});
-		preSetsBox.setSelectedIndex(0);
+		preSetsBox.setSelectedIndex(3);
 		
 		selectionTab.removeAll();
 		selectionTab.setLeftAppend("     ");
@@ -152,16 +157,18 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 	
 	private void drawSearchTab()
 	{
-		searchName.addKeyListener( redraw ); 
-		searchPurpose.addKeyListener( redraw );
+		tfSearchName = new JTextField( searchName );
+		tfSearchName.addKeyListener( redraw ); 
+		tfSearchPurpose = new JTextField( searchPurpose );
+		tfSearchPurpose.addKeyListener( redraw );
 		
 		searchTab.removeAll();
 		searchTab.setLeftAppend("     ");
 		searchTab.setMiddleAppend("   ");
 		searchTab.addRow("SEARCH", "");
 		searchTab.setMiddleAppend(" : ");
-		searchTab.addRow( "NAME", searchName );
-		searchTab.addRow( "PURPOSE", searchPurpose );
+		searchTab.addRow( "NAME", tfSearchName );
+		searchTab.addRow( "PURPOSE", tfSearchPurpose );
 	}
 	
 	private void drawStatsTab()
@@ -186,8 +193,8 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 	{
 		north.removeAll();
 		drawInfoTab();
-		drawSelectionTab();
 		drawSearchTab();
+		drawSelectionTab();
 		drawStatsTab();
 		north.addTab(guiSettings.getPhrase("ACCOUNT_INFO"), infoTab);
 		north.addTab(guiSettings.getPhrase("SELECTION"), selectionTab);
@@ -200,9 +207,9 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 		tList = new ArrayList<BAMTransaction>();
 		for( BAMTransaction t : account.getTransactions() )
 			if( bDrawStored.isSelected() || ! user.isTransactionStored( t ) )
-				if( t.getDate().before( toDate.getDate() ) && t.getDate().after( fromDate.getDate(-1) ) )
-					if( t.getName().toLowerCase().contains( searchName.getText().toLowerCase() ) )
-						if( t.getPurpose().toLowerCase().contains( searchPurpose.getText().toLowerCase() ) )
+				if( t.getDate().before( toDate ) && t.getDate().after( fromDate ) )
+					if( t.getName().toLowerCase().contains( searchName.toLowerCase() ) )
+						if( t.getPurpose().toLowerCase().contains( searchPurpose.toLowerCase() ) )
 							tList.add(t);
 		tList.sort( comparator );
 		
@@ -221,13 +228,17 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 
 	private void redraw()
 	{
-		drawStatsTab();
+		fromDate = dsFromDate.getDate(-1);
+		toDate = dsToDate.getDate();
+		searchName = tfSearchName.getText();
+		searchPurpose = tfSearchPurpose.getText();
 		drawCenter();
+		drawStatsTab();
 	}
 	
 	private void initPreSets()
 	{
-		preSets = new preSet[5];
+		preSets = new preSet[6];
 		Date date = new Date();
 		preSets[0] = new preSet("THIS_MONTH", date.getDate());
 		preSets[1] = new preSet("LAST_30_DAYS", 30);
@@ -236,7 +247,9 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 		date.setMonth(0);
 		date.setDate(-5);
 		preSets[3] = new preSet("THIS_YEAR",date);
-		preSets[4] = new preSet("ALL", 3650 );
+		Date date2 = new Date( date.getTime() - 366 * 86400000 );
+		preSets[4] = new preSet("LAST_YEAR",date2,date);
+		preSets[5] = new preSet("ALL", 3650 );
 	}
 	
 	@Override
