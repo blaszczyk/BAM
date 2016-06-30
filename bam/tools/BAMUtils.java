@@ -6,51 +6,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
+import bam.gui.settings.BAMGUISettings;
+
 
 public class BAMUtils {
-
-/*
-//***********************************************************	
-	public static String strToLength( String in, int length )
-	{
-		if(in == null)
-			return strToLength("null",length);
-		if(length < 0) return "";
-		if(in.length()>length) return in.substring(0,length);
-		StringBuilder sb = new StringBuilder().append(in);
-		for(int i = in.length(); i<length; i++)
-			sb.append(' ');
-		return sb.toString();
-	}
-
-
-//***********************************************************	
-	public static String StrToLengthRight( String in, int length )
-	{
-		if(in == null)
-			return StrToLengthRight("null",length);
-		if(length < 0) return "";
-		if(in.length()>length) return in.substring(0,length);
-		StringBuilder sb = new StringBuilder();
-		for(int i = in.length(); i<length; i++)
-			sb.append(' ');
-		return sb.append(in).toString();
-	}
 	
+	private static BAMGUISettings guiSettings = BAMGUISettings.getInstance();
 
-//***********************************************************
-	public static String StrToLengthRight( BigDecimal in, int length )
-	{
-		return StrToLengthRight( in.toString(), length );
-	}
-	
-//***********************************************************
-	public static String IntToLengthRight( int in, int length)
-	{
-		return StrToLengthRight( "" + in , length);
-	}
-//*/
-//***********************************************************
 	public static Date parseDate( String in ) throws BAMException
 	{		
 		try{
@@ -61,8 +23,7 @@ public class BAMUtils {
 			throw new BAMException("Error parsing Date from " + in, pe);
 		}		
 	}
-
-//***********************************************************	
+	
 	public static boolean isBigDec( String in)
 	{		
 		try{
@@ -86,6 +47,14 @@ public class BAMUtils {
 		catch(ParseException pe){
 			return BigDecimal.ZERO;
 		}		
+	}
+	
+	public static String toString( BigDecimal in )
+	{
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols( guiSettings.getLocale() );
+		String format = "###,##0.00";
+		DecimalFormat df = new DecimalFormat(format, formatSymbols);
+		return df.format( in.doubleValue() );
 	}
 
 //***********************************************************	

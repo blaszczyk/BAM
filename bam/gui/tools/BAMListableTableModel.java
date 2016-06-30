@@ -1,6 +1,7 @@
 package bam.gui.tools;
 
 import java.util.Date;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,15 +50,25 @@ public class BAMListableTableModel implements TableModel {
 	public String getColumnKey(int columnIndex) {
 		return keys.get(columnIndex);
 	}
-	
-	@Override
-	public Class<?> getColumnClass(int columnIndex) {
+
+	public Class<?> getTrueColumnClass(int columnIndex) {
 		String key = keys.get( columnIndex );
 		if( isEmpty || !firstItem.containsKey(key) )
 			return String.class;
-		if( firstItem.getClass(key) == Date.class )
-			return String.class;
 		return firstItem.getClass(key);
+	}
+	
+	public Object getTrueValueAt(int rowIndex, int columnIndex) {
+		String key = keys.get(columnIndex);
+		BAMListable item = list.get(rowIndex);
+		if( !item.containsKey(key) )
+			return guiSettings.getPhrase(key);
+		return item.getValue(key);
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		return String.class;
 	}
 
 	@Override
@@ -79,6 +90,12 @@ public class BAMListableTableModel implements TableModel {
 			if( date.getTime() < 1 )
 				return "";
 			return " " + BAMUtils.DateDDMMYYYY( date ) + " ";
+		}
+		if( item.getClass(key) == BigDecimal.class )
+		{
+			BigDecimal no = (BigDecimal) item.getValue(key);
+			return BAMUtils.toString(no) + " ";
+			
 		}
 		return item.getValue(key);
 	}

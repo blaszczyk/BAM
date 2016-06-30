@@ -14,6 +14,7 @@ import javax.swing.UIManager;
 
 import bam.core.BAMListable;
 import bam.gui.settings.BAMGUISettings;
+import bam.tools.BAMUtils;
 
 @SuppressWarnings("serial")
 public class BAMSwingTwoTable extends JPanel {
@@ -62,7 +63,7 @@ public class BAMSwingTwoTable extends JPanel {
 	
 	public void addRow( String left, BigDecimal right, String append)
 	{
-		JLabel number = new JLabel( right.toString() + append );
+		JLabel number = new JLabel( BAMUtils.toString(right) + append );
 		number.setFont(font);
 		if( right.signum() < 0 )
 			number.setForeground( Color.RED );

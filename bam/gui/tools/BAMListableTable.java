@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -95,13 +96,19 @@ public class BAMListableTable extends JTable {
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 					boolean hasFocus, int row, int column) {
 				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				if( ! ( table.getValueAt(row, column) instanceof BigDecimal) )
+				if( ! ( tableModel.getTrueValueAt(row, column) instanceof BigDecimal) )
 					return c;
-				if( ( (BigDecimal) table.getValueAt(row, column) ).signum() < 0 )
+				if( ( (BigDecimal) tableModel.getTrueValueAt(row, column) ).signum() < 0 )
 					c.setForeground( Color.RED );
 				else
 					c.setForeground( Color.BLACK );
 				return c;
+			}
+			
+			@Override
+			public void setHorizontalAlignment( int alignment )
+			{
+				super.setHorizontalAlignment( JLabel.RIGHT );
 			}
 		});
 	}
@@ -133,7 +140,7 @@ public class BAMListableTable extends JTable {
 		for( int i = 0; i < columnWidths.length; i++)
 			getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);	
 		for( int i = 0; i < tableModel.getColumnCount(); i++)
-			if( tableModel.getColumnClass(i).equals( BigDecimal.class ) )
+			if( tableModel.getTrueColumnClass(i).equals( BigDecimal.class ) )
 				makeTableNumbersRed(i);
 	}
 }

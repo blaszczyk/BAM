@@ -10,6 +10,7 @@ import bam.core.*;
 import bam.gui.settings.BAMGUISettings;
 import bam.gui.tools.BAMListableTable;
 import bam.gui.tools.BAMSwingTwoTable;
+import bam.tools.BAMUtils;
 
 @SuppressWarnings("serial")
 public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListener{
@@ -54,7 +55,7 @@ public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListen
 		north.setLeftAppend("     ");
 		north.setMiddleAppend(" : ");
 		north.addRow( "SUBACCOUNT" , subaccount.toString() );
-		north.addRow( BAMSubAccount.BALANCE , subaccount.getBalance().toString() );		
+		north.addRow( BAMSubAccount.BALANCE , subaccount.getBalance() );		
 		north.setVisible(true);
 	}
 	
