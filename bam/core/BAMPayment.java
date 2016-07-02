@@ -99,6 +99,13 @@ public class BAMPayment extends BAMAbstractListable{
 				return true;
 		return false;
 	}
+	
+	public boolean suggestForTransaction( BAMTransaction transaction)
+	{
+		if( transaction.getPurpose().toLowerCase().contains( getPurpose().toLowerCase() ) )
+			return true;
+		return false;
+	}
 
 	/*
 	 * Listable Methods

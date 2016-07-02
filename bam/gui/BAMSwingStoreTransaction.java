@@ -29,7 +29,7 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 	private JTextField tfPurpose = new JTextField();
 	private JTextField tfBillNr = new JTextField();
 	
-	private BAMSuggestMultiPayment suggestor;
+	private BAMSuggestor suggestor;
 	private BAMTransaction transaction;
 	private List<BAMTransaction> tList;
 	private BAMSubAccount subAccount;
@@ -48,6 +48,7 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			targetPayment =  (BAMListable) e.getSource();
+			selectSubAccount();
 			drawSouth();
 		}
 	};
@@ -181,14 +182,14 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 				JLabel label = new JLabel(guiSettings.getPhrase("SUGG_MULTI"), SwingConstants.CENTER);
 				label.setFont( guiSettings.getFont( BAMFontSet.BIG ) );
 				center.add(label);
-				label = new JLabel(suggestor.getSuggestion(0).getName() + " - " + suggestor.getSuggestion(0).getPurpose() , SwingConstants.CENTER);
+				label = new JLabel("" + suggestor.getSuggestion(0).getValue("NAME") + " - " + suggestor.getSuggestion(0).getValue("PURPOSE") , SwingConstants.CENTER);
 				label.setFont( guiSettings.getFont( BAMFontSet.BIG ) );
 				center.add(label);
 			}
 //				center.add( new JLabel( guiSettings.getPhrase("SUGG_MULTI") + suggestor.getSuggestion(0).getName() + " - " + suggestor.getSuggestion(0).getPurpose() ), SwingConstants.CENTER);
 			else
 			{
-				BAMListableTable mptable = new BAMListableTable( suggestor.getSuggestions(), BAMMultiPayment.NAME, BAMMultiPayment.PURPOSE, "SELECT");
+				BAMListableTable mptable = new BAMListableTable( suggestor.getSuggestions(), "NAME", "PURPOSE", "SELECT");
 				mptable.setColumnWidths(250,300,150);
 				mptable.setButtonColumnMouse(2, select);
 				mptable.draw();
@@ -207,7 +208,7 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 			form.addRow( BAMPayment.AMOUNT , tfAmount);
 			form.addRow( BAMPayment.PURPOSE , tfPurpose);
 			form.addRow( BAMPayment.BILL_NR , tfBillNr);
-			form.addRow( BAMPayment.DATE , transaction.getDate().toString() );
+			form.addRow( BAMPayment.DATE , BAMUtils.DateDDMMYYYY( transaction.getDate() ) );
 			center.add(form) ;
 			break;
 		case TYPE_OLD_PAYMENT:
@@ -310,12 +311,12 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 	{		
 		this.transaction = transaction;
 		setTitle( guiSettings.getPhrase("STORE_TTL") + " - " + transaction.getTransaction_id()) ;
-		suggestor = new BAMSuggestMultiPayment(transaction, user).findSuggestion();
+		suggestor = new BAMSuggestor(transaction, user).findSuggestion();
 		if( suggestor.getSuggestionCount() > 0)
 		{
 			type = TYPE_SUGGESTION;
 			targetPayment = suggestor.getSuggestion(0);
-			subAccount = ((BAMMultiPayment)targetPayment).getParent();
+			selectSubAccount();
 		}
 		else
 		{
@@ -333,4 +334,13 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 		else
 			loadTransaction(tList.get(tCount));
 	}
+	
+	private void selectSubAccount()
+	{
+		if( targetPayment instanceof BAMMultiPayment )
+			subAccount = ((BAMMultiPayment)targetPayment).getParent();
+		if( targetPayment instanceof BAMPayment )
+			subAccount = ((BAMPayment)targetPayment).getParent();
+	}
+	
 }

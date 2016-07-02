@@ -1,22 +1,17 @@
 package bam.tools;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import bam.core.BAMAccount;
-import bam.core.BAMMultiPayment;
-import bam.core.BAMSubAccount;
-import bam.core.BAMTransaction;
-import bam.core.BAMUser;
+import bam.core.*;
 
-public class BAMSuggestMultiPayment {
+public class BAMSuggestor {
 	
-	private List<BAMMultiPayment> suggestions = new ArrayList<>();
+	private List<BAMListable> suggestions = new ArrayList<>();
 	private BAMTransaction transaction;
 	private BAMUser user;
 	
-	public BAMSuggestMultiPayment(BAMTransaction transaction, BAMUser user)
+	public BAMSuggestor(BAMTransaction transaction, BAMUser user)
 	{
 		this.transaction = transaction;
 		this.user = user;
@@ -24,13 +19,18 @@ public class BAMSuggestMultiPayment {
 
 
 	
-	public BAMSuggestMultiPayment findSuggestion()
+	public BAMSuggestor findSuggestion()
 	{
 		for( BAMAccount a : user.getAccounts())
 			for( BAMSubAccount sa : a.getSubAccounts() )
+			{
+				for( BAMPayment p : sa.getPayments() )
+					if( p.suggestForTransaction(transaction) )
+						suggestions.add( p );
 				for( BAMMultiPayment mp : sa.getMultiPayments() )
 					if( mp.suggestForTransaction(transaction) )
 						suggestions.add(mp);
+			}
 		return this;
 	}
 	
@@ -39,12 +39,12 @@ public class BAMSuggestMultiPayment {
 		return suggestions.size();
 	}
 	
-	public List<BAMMultiPayment> getSuggestions()
+	public List<BAMListable> getSuggestions()
 	{
-		return Collections.unmodifiableList( suggestions );
+		return suggestions;
 	}
 	
-	public BAMMultiPayment getSuggestion( int index)
+	public BAMListable getSuggestion( int index)
 	{
 		return suggestions.get(index);
 	}
