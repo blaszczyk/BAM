@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -34,6 +35,12 @@ public class BAMGUISettings extends BAMModifyableListable {
 	public static BufferedImage ICON2;
 	public static BufferedImage ICON3;
 	public static List<BufferedImage> icons;
+	private ImageIcon paymentIcon;
+	private ImageIcon multipaymentIcon;
+	private ImageIcon paymentListIcon;
+	private ImageIcon multipaymentListIcon;
+	private ImageIcon accountIcon;
+	private ImageIcon subaccountIcon;
 	
 	public static List<BAMFontSet> fontsets;
 
@@ -58,6 +65,12 @@ public class BAMGUISettings extends BAMModifyableListable {
 			ICON1 = ImageIO.read(new File("data/icon1.bmp"));
 			ICON2 = ImageIO.read(new File("data/icon2.bmp"));
 			ICON3 = ImageIO.read(new File("data/icon3.bmp"));
+			paymentIcon = new ImageIcon( ImageIO.read(new File("data/payment.png")) );
+			multipaymentIcon = new ImageIcon( ImageIO.read(new File("data/multipayment.png")) );
+			paymentListIcon = new ImageIcon( ImageIO.read(new File("data/paymentlist.png")) );
+			multipaymentListIcon = new ImageIcon( ImageIO.read(new File("data/multipaymentlist.png")) );
+			accountIcon = new ImageIcon( ImageIO.read(new File("data/account.png")) );
+			subaccountIcon = new ImageIcon( ImageIO.read(new File("data/subaccount.png")) );
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -82,6 +95,30 @@ public class BAMGUISettings extends BAMModifyableListable {
 		return icon;
 	}
 	
+	public ImageIcon getPaymentIcon() {
+		return paymentIcon;
+	}
+
+	public ImageIcon getMultipaymentIcon() {
+		return multipaymentIcon;
+	}
+
+	public ImageIcon getPaymentListIcon() {
+		return paymentListIcon;
+	}
+
+	public ImageIcon getMultipaymentListIcon() {
+		return multipaymentListIcon;
+	}
+
+	public ImageIcon getAccountIcon() {
+		return accountIcon;
+	}
+
+	public ImageIcon getSubaccountIcon() {
+		return subaccountIcon;
+	}
+
 	public Border getBorder()
 	{
 		return border;

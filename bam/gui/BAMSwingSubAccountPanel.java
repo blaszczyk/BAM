@@ -10,7 +10,6 @@ import bam.core.*;
 import bam.gui.settings.BAMGUISettings;
 import bam.gui.tools.BAMListableTable;
 import bam.gui.tools.BAMSwingTwoTable;
-import bam.tools.BAMUtils;
 
 @SuppressWarnings("serial")
 public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListener{
@@ -21,7 +20,10 @@ public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListen
 	private BAMController controller;
 
 	private BAMSwingTwoTable north = new BAMSwingTwoTable( 2 );
-	private JSplitPane center = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
+	private JTabbedPane center = new JTabbedPane();
+	private JPanel paymentsPanel = new JPanel();
+	private JPanel multipaymentsPanel = new JPanel();
+	private JSplitPane tablePanel = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
 	
 	private Action view = new AbstractAction(){
 		@Override 
@@ -61,6 +63,35 @@ public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListen
 	
 	
 	private void drawCenter(){
+		drawTableView();
+		drawPaymentsView();
+		drawMultiPaymentsView();
+		center.addTab(guiSettings.getPhrase("TABLE_VIEW"), tablePanel);
+		center.addTab(guiSettings.getPhrase("PAYMENTS"), paymentsPanel);
+		center.addTab(guiSettings.getPhrase("MULTIPAYMENTS"), multipaymentsPanel);
+	}
+		
+	private void drawMultiPaymentsView()
+	{
+		multipaymentsPanel.setVisible(false);
+		multipaymentsPanel.removeAll();
+		multipaymentsPanel.add( new JLabel("MPS") );
+		// TODO: add some more
+		multipaymentsPanel.setVisible(true);
+	}
+
+
+	private void drawPaymentsView()
+	{
+		paymentsPanel.setVisible(false);
+		paymentsPanel.removeAll();
+		paymentsPanel.add( new JLabel("PS") );
+		// TODO: add some more
+		paymentsPanel.setVisible(true);
+	}
+
+
+	private void drawTableView(){
 		BAMListableTable mptable = new BAMListableTable( subaccount.getMultiPayments(), 
 				BAMMultiPayment.NAME, BAMMultiPayment.PURPOSE, BAMMultiPayment.TOTAL_AMOUNT, 
 				BAMMultiPayment.LAST_AMOUNT, BAMMultiPayment.LAST_DATE, BAMMultiPayment.NR_TRANSACTIONS, "VIEW");
@@ -76,17 +107,29 @@ public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListen
 		ptable.setButtonColumn(6, delete);
 		ptable.draw();
 		
-		center.setVisible(false);
-		center.setLeftComponent(new JScrollPane( mptable ));
-		center.setRightComponent(new JScrollPane( ptable));
+		tablePanel.setVisible(false);
+		tablePanel.setLeftComponent(new JScrollPane( mptable ));
+		tablePanel.setRightComponent(new JScrollPane( ptable));
 		int divLoc = (int) mptable.getPreferredSize().getHeight() + 50;
 //		int divLoc = (int) ((center.getPreferredSize().getHeight() + mptable.getPreferredSize().getHeight() - ptable.getPreferredSize().getHeight() ) / 2);
 //		System.out.println("" + center.getPreferredSize().getHeight() + " " + mptable.getPreferredSize().getHeight() + " " + ptable.getPreferredSize().getHeight() );
 //		System.out.println(divLoc);
-		center.setDividerLocation(divLoc);
-		center.setOneTouchExpandable(true);
-		center.setContinuousLayout(true);
-		center.setVisible( true );
+		tablePanel.setDividerLocation(divLoc);
+		tablePanel.setOneTouchExpandable(true);
+		tablePanel.setContinuousLayout(true);
+		tablePanel.setVisible( true );
+	}
+
+	public BAMSwingSubAccountPanel setPaymentView( )
+	{
+		center.setSelectedIndex( 1 );
+		return this;
+	}
+
+	public BAMSwingSubAccountPanel setMultiPaymentView( )
+	{
+		center.setSelectedIndex( 2 );
+		return this;
 	}
 
 	@Override

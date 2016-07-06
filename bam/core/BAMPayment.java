@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
-public class BAMPayment extends BAMAbstractListable{
+public class BAMPayment extends BAMAbstractListable implements BAMGenericPayment{
 	
 	public static final String NAME = "NAME";
 	public static final String AMOUNT = "AMOUNT";
@@ -81,6 +81,12 @@ public class BAMPayment extends BAMAbstractListable{
 
 	public int getTransactionCount() {
 		return getTransactions().size();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getName() + " - " + getPurpose();
 	}
 
 	/*
