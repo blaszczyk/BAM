@@ -1,6 +1,5 @@
 package bam.controller;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Locale;
 
@@ -79,7 +78,7 @@ public class BAMBasicGUIController implements BAMGUIController {
 	}
 
 	@Override
-	public boolean setGUISettings(Locale locale, BAMFontSet fontSet, BufferedImage icon) {
+	public boolean setGUISettings(Locale locale, BAMFontSet fontSet, String icon) {
 		guiSettings.setLocale(locale);
 		guiSettings.setFontSet(fontSet);
 		guiSettings.setIcon(icon);

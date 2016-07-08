@@ -36,7 +36,7 @@ public class BAMListableJson {
 			{
 				String value;
 				if( listable.getClass(key) == Date.class )
-					value = BAMUtils.DateDDMMYYYY( (Date)listable.getValue(key)  );
+					value = BAMFormats.dateFormat( (Date)listable.getValue(key)  );
 				else
 					value = listable.getValue(key).toString();
 				writer.name(key).value(value);
@@ -85,9 +85,9 @@ public class BAMListableJson {
 			{
 				String value = reader.nextString();
 				if( listable.getClass(key) == Date.class )
-					listable.setValue( key, BAMUtils.toDateFormatDDMMYYYY( value ) );
+					listable.setValue( key, BAMFormats.parseDateDisplayFormat( value ) );
 				else if( listable.getClass(key) == BigDecimal.class )
-					listable.setValue( key, BAMUtils.toBigDec( value ) );
+					listable.setValue( key, BAMFormats.parseBigDec( value ) );
 				else
 					listable.setValue( key, value );
 			}

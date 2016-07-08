@@ -10,11 +10,18 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import bam.gui.settings.BAMGraphics;
+
 @SuppressWarnings("serial")
 public class BAMIconRadioButton extends JPanel {
 
 	JRadioButton button;
 	JButton iconbutton;
+
+	public BAMIconRadioButton( String iconFile, String compareIconFile )
+	{
+		this( BAMGraphics.getImage(iconFile), iconFile.equals(compareIconFile) );
+	}
 	
 	public BAMIconRadioButton( BufferedImage icon ) {
 		super( new BorderLayout(0,0) );

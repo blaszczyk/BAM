@@ -5,17 +5,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -31,27 +27,17 @@ public class BAMGUISettings extends BAMModifyableListable {
 	
 	private static Map<String,Class<?>> guiSettingsClassMap;
 	
-	public static BufferedImage ICON1;	
-	public static BufferedImage ICON2;
-	public static BufferedImage ICON3;
-	public static List<BufferedImage> icons;
-	private ImageIcon paymentIcon;
-	private ImageIcon multipaymentIcon;
-	private ImageIcon paymentListIcon;
-	private ImageIcon multipaymentListIcon;
-	private ImageIcon accountIcon;
-	private ImageIcon subaccountIcon;
-	
 	public static List<BAMFontSet> fontsets;
-
 	public static List<Locale> locales;
-	
-	private BufferedImage icon;		
+		
 	private BAMLanguage language;
+	private String icon;
 	private BAMFontSet fontSet;
 	private Locale locale;
-	private static BAMGUISettings instance;
 	private Border border;
+	
+	
+	private static BAMGUISettings instance;
 	
 	public static BAMGUISettings getInstance()
 	{
@@ -61,21 +47,6 @@ public class BAMGUISettings extends BAMModifyableListable {
 	}
 	
 	private BAMGUISettings () {
-		try {
-			ICON1 = ImageIO.read(new File("data/icon1.bmp"));
-			ICON2 = ImageIO.read(new File("data/icon2.bmp"));
-			ICON3 = ImageIO.read(new File("data/icon3.bmp"));
-			paymentIcon = new ImageIcon( ImageIO.read(new File("data/payment.png")) );
-			multipaymentIcon = new ImageIcon( ImageIO.read(new File("data/multipayment.png")) );
-			paymentListIcon = new ImageIcon( ImageIO.read(new File("data/paymentlist.png")) );
-			multipaymentListIcon = new ImageIcon( ImageIO.read(new File("data/multipaymentlist.png")) );
-			accountIcon = new ImageIcon( ImageIO.read(new File("data/account.png")) );
-			subaccountIcon = new ImageIcon( ImageIO.read(new File("data/subaccount.png")) );
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		BufferedImage[] iconArray = {ICON1,ICON2,ICON3}; 
-		icons = Arrays.asList( iconArray );
 
 		BAMFontSet[] fontsetsArray = {BAMFontSet.SMALL_SET, BAMFontSet.MEDIUM_SET, BAMFontSet.BIG_SET};
 		fontsets = Arrays.asList( fontsetsArray );
@@ -89,36 +60,12 @@ public class BAMGUISettings extends BAMModifyableListable {
 //		setFontSet( BAMFontSet.MEDIUM_SET );
 //		setLocale( Locale.GERMAN );
 	}
-	
+
 	public BufferedImage getIcon()
 	{
-		return icon;
+		return BAMGraphics.getImage((String)getValue(ICON));
 	}
 	
-	public ImageIcon getPaymentIcon() {
-		return paymentIcon;
-	}
-
-	public ImageIcon getMultipaymentIcon() {
-		return multipaymentIcon;
-	}
-
-	public ImageIcon getPaymentListIcon() {
-		return paymentListIcon;
-	}
-
-	public ImageIcon getMultipaymentListIcon() {
-		return multipaymentListIcon;
-	}
-
-	public ImageIcon getAccountIcon() {
-		return accountIcon;
-	}
-
-	public ImageIcon getSubaccountIcon() {
-		return subaccountIcon;
-	}
-
 	public Border getBorder()
 	{
 		return border;
@@ -196,7 +143,12 @@ public class BAMGUISettings extends BAMModifyableListable {
 		return fontSet;
 	}
 
-	public void setIcon(BufferedImage icon) {
+	public String getIconFile()
+	{
+		return icon;
+	}
+	
+	public void setIcon(String icon) {
 		this.icon = icon;
 	}
 	
@@ -210,7 +162,7 @@ public class BAMGUISettings extends BAMModifyableListable {
 		switch( key )
 		{
 		case ICON:
-			return "" + icons.indexOf(icon);
+			return icon;
 		case FONT:
 			return "" + fontsets.indexOf(fontSet);
 		case LOCALE:
@@ -222,17 +174,17 @@ public class BAMGUISettings extends BAMModifyableListable {
 	@Override
 	public void setValue( String key, Object o )
 	{
-		int index = Integer.parseInt( (String) o );
+		String value = (String) o;
 		switch( key )
 		{
 		case ICON:
-			setIcon( icons.get(index) );
+			setIcon( value );
 			return;
 		case FONT:
-			setFontSet( fontsets.get(index) );
+			setFontSet( fontsets.get(Integer.parseInt( value )) );
 			return;
 		case LOCALE:
-			setLocale( locales.get(index) );
+			setLocale( locales.get(Integer.parseInt( value )) );
 			return;
 		}
 	}
@@ -257,5 +209,6 @@ public class BAMGUISettings extends BAMModifyableListable {
 			guiSettingsClassMap.put(LOCALE, String.class);
 		}
 	}
+
 
 }

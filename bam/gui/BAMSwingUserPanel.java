@@ -17,7 +17,7 @@ import bam.core.BAMUser;
 import bam.gui.settings.BAMFontSet;
 import bam.gui.settings.BAMGUISettings;
 import bam.gui.tools.BAMSwingMsgPanel;
-import bam.tools.BAMUtils;
+import bam.tools.BAMFormats;
 
 @SuppressWarnings("serial")
 public class BAMSwingUserPanel extends JPanel implements BAMModifiedListener {
@@ -52,11 +52,11 @@ public class BAMSwingUserPanel extends JPanel implements BAMModifiedListener {
 		{
 			center.drawMsg("" , 
 					guiSettings.getPhrase("ACCOUNT") + ": " + a + " ( " + a.getIban() + " ) " , 
-					"     " + guiSettings.getPhrase("BALANCE") + ": " + BAMUtils.toString( a.getBalance() ) + " " + guiSettings.getPhrase("EUR"));
+					"     " + guiSettings.getPhrase("BALANCE") + ": " + BAMFormats.currencyFormat( a.getBalance() ));
 			for( BAMSubAccount sa : a.getSubAccounts() )
-				center.drawMsg("     " + guiSettings.getPhrase("SUBACCOUNT") + ": " + sa + " ( " + BAMUtils.toString( sa.getBalance() ) + " " + guiSettings.getPhrase("EUR") + " )");
+				center.drawMsg("     " + guiSettings.getPhrase("SUBACCOUNT") + ": " + sa + " ( " + BAMFormats.currencyFormat( sa.getBalance() ) + " )");
 			if( a.getMisBalance().compareTo( BigDecimal.ZERO) != 0 )
-				center.drawMsg( Color.RED, guiSettings.getPhrase("BALANCE_MIS1") + BAMUtils.toString( a.getMisBalance() ) + guiSettings.getPhrase("BALANCE_MIS2") + a );
+				center.drawMsg( Color.RED, guiSettings.getPhrase("BALANCE_MIS1") + BAMFormats.currencyFormat( a.getMisBalance() ) + guiSettings.getPhrase("BALANCE_MIS2") + a );
 		}		
 	}
 	

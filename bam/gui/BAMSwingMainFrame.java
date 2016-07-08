@@ -1,21 +1,14 @@
 package bam.gui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
 import bam.controller.BAMController;
 import bam.core.*;
+import bam.gui.settings.BAMGraphics;
 import bam.gui.tools.BAMSwingFrame;
 import bam.gui.tools.BAMUserTreeModel;
 import bam.gui.tools.BAMUserTreeModel.BAMListableList;
@@ -67,23 +60,23 @@ public class BAMSwingMainFrame extends BAMSwingFrame {
 			{
 				Component renderer = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
 				if( value instanceof BAMUser )
-					setIcon( new ImageIcon( guiSettings.getIcon() ) );
+					setIcon( BAMGraphics.getImageIcon( BAMGraphics.USER ) );
 				if( value instanceof BAMAccount)
-					setIcon( guiSettings.getAccountIcon() );
+					setIcon( BAMGraphics.getImageIcon( BAMGraphics.ACCOUNT ) );
 				if( value instanceof BAMSubAccount)
-					setIcon( guiSettings.getSubaccountIcon() );
+					setIcon( BAMGraphics.getImageIcon( BAMGraphics.SUBACCOUNT ) );
 				if( value instanceof BAMListableList )
 				{
 					BAMListableList<?> list = (BAMListableList<?>) value;
 					if( list.getType() == BAMListableList.PAYMENT )
-						setIcon( guiSettings.getPaymentListIcon() );
+						setIcon( BAMGraphics.getImageIcon( BAMGraphics.PAYMENT_LIST ) );
 					else // if( list.getType() == BAMListableList.MULTIPAYMENT )
-						setIcon( guiSettings.getMultipaymentListIcon() );
+						setIcon( BAMGraphics.getImageIcon( BAMGraphics.MULTIPAYMENT_LIST ) );
 				}
 				if( value instanceof BAMPayment )
-					setIcon( guiSettings.getPaymentIcon() );
+					setIcon( BAMGraphics.getImageIcon( BAMGraphics.PAYMENT ) );
 				if( value instanceof BAMMultiPayment )
-					setIcon( guiSettings.getMultipaymentIcon() );
+					setIcon( BAMGraphics.getImageIcon( BAMGraphics.MULTIPAYMENT ) );
 				return renderer;
 			}
 		});

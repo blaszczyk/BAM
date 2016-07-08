@@ -1,6 +1,5 @@
 package bam.controller;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,7 +21,7 @@ public interface BAMGUIController {
 
 	public void closeFrame( BAMSwingFrame frame );
 
-	public boolean setGUISettings(Locale locale, BAMFontSet fontSet, BufferedImage icon);
+	public boolean setGUISettings(Locale locale, BAMFontSet fontSet, String iconFile);
 	public boolean loadGUISettings();
 	public boolean saveGUISettings();
 

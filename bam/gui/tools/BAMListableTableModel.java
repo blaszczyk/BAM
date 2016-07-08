@@ -10,7 +10,7 @@ import javax.swing.table.TableModel;
 
 import bam.core.BAMListable;
 import bam.gui.settings.BAMGUISettings;
-import bam.tools.BAMUtils;
+import bam.tools.BAMFormats;
 
 public class BAMListableTableModel implements TableModel {
 
@@ -89,12 +89,12 @@ public class BAMListableTableModel implements TableModel {
 			Date date = (Date) item.getValue(key);
 			if( date.getTime() < 1 )
 				return "";
-			return " " + BAMUtils.DateDDMMYYYY( date ) + " ";
+			return " " + BAMFormats.dateFormat( date ) + " ";
 		}
 		if( item.getClass(key) == BigDecimal.class )
 		{
 			BigDecimal no = (BigDecimal) item.getValue(key);
-			return BAMUtils.toString(no) + " ";
+			return BAMFormats.currencyFormat(no) + " ";
 			
 		}
 		return item.getValue(key);

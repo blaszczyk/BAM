@@ -147,7 +147,7 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 			newPayment.setSelected(true);	
 
 				
-		JTree tree = new JTree( new BAMUserTreeModel ( user ) );
+		JTree tree = new JTree( new BAMUserTreeModel ( user ).setTerminateAtSubaccounts(true) );
 		for (int row = 0; row < tree.getRowCount(); row++ )
 			tree.expandPath( tree.getPathForRow(row));
 		tree.addTreeSelectionListener( e -> {
@@ -208,7 +208,7 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 			form.addRow( BAMPayment.AMOUNT , tfAmount);
 			form.addRow( BAMPayment.PURPOSE , tfPurpose);
 			form.addRow( BAMPayment.BILL_NR , tfBillNr);
-			form.addRow( BAMPayment.DATE , BAMUtils.DateDDMMYYYY( transaction.getDate() ) );
+			form.addRow( BAMPayment.DATE , BAMFormats.dateFormat( transaction.getDate() ) );
 			center.add(form) ;
 			break;
 		case TYPE_OLD_PAYMENT:

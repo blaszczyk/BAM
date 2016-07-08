@@ -2,7 +2,6 @@ package bam.gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
 import java.util.Locale;
 
 import javax.swing.*;
@@ -10,6 +9,7 @@ import javax.swing.*;
 import bam.controller.BAMController;
 import bam.gui.settings.BAMFontSet;
 import bam.gui.settings.BAMGUISettings;
+import bam.gui.settings.BAMGraphics;
 import bam.gui.tools.BAMIconRadioButton;
 import bam.gui.tools.BAMSwingFrame;
 
@@ -21,13 +21,13 @@ public class BAMSwingSettings extends BAMSwingFrame {
 	
 	private Locale locale;
 	private BAMFontSet fontSet;
-	private BufferedImage icon;
+	private String iconFile = (String) guiSettings.getValue( BAMGUISettings.ICON);
 	
 	public BAMSwingSettings(BAMController controller) {
 		super("SETTINGS", controller);
 		locale = guiSettings.getLocale();
 		fontSet = guiSettings.getFontSet();
-		icon = guiSettings.getIcon();
+		iconFile = guiSettings.getIconFile();
 		setMinimumSize( new Dimension(400,100 ));
 		drawAll();
 		setComponents(null,null,center,null,south);
@@ -89,17 +89,17 @@ public class BAMSwingSettings extends BAMSwingFrame {
 		 * Icon Selection
 		 */
 
-		BAMIconRadioButton icon1 = new BAMIconRadioButton( BAMGUISettings.ICON1 , icon );
+		BAMIconRadioButton icon1 = new BAMIconRadioButton( BAMGraphics.ICON1 , iconFile );
 		icon1.addActionListener( e -> {
-			icon = BAMGUISettings.ICON1; 			
+			iconFile  = BAMGraphics.ICON1;		
 		});
-		BAMIconRadioButton icon2 = new BAMIconRadioButton( BAMGUISettings.ICON2 , icon );
+		BAMIconRadioButton icon2 = new BAMIconRadioButton( BAMGraphics.ICON2 , iconFile );
 		icon2.addActionListener( e -> {
-			icon = BAMGUISettings.ICON2;
+			iconFile  = BAMGraphics.ICON2;
 		});
-		BAMIconRadioButton icon3 = new BAMIconRadioButton( BAMGUISettings.ICON3 , icon );
+		BAMIconRadioButton icon3 = new BAMIconRadioButton( BAMGraphics.ICON3 , iconFile );
 		icon3.addActionListener( e -> {
-			icon = BAMGUISettings.ICON3;
+			iconFile  = BAMGraphics.ICON3;
 		});
 		
 		ButtonGroup icons = new ButtonGroup();
@@ -128,12 +128,12 @@ public class BAMSwingSettings extends BAMSwingFrame {
 	{
 		JButton apply = new JButton( guiSettings.getPhrase("APPLY") );
 		apply.addActionListener( e -> {
-			controller.setGUISettings(locale, fontSet, icon);
+			controller.setGUISettings(locale, fontSet, iconFile);
 		});
 		
 		JButton save = new JButton( guiSettings.getPhrase("SAVE") );
 		save.addActionListener( e -> {
-			controller.setGUISettings( locale, fontSet, icon );
+			controller.setGUISettings( locale, fontSet, iconFile );
 			controller.saveGUISettings();
 			controller.closeFrame( this );
 		});

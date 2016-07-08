@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 import bam.gui.settings.BAMGUISettings;
 import bam.gui.tools.BAMSwingFrame;
-import bam.tools.BAMUtils;
+import bam.tools.BAMFormats;
 import bam.core.*;
 
 public class BAMDecoratorConfirmMsg implements BAMCoreController {
@@ -110,7 +110,7 @@ public class BAMDecoratorConfirmMsg implements BAMCoreController {
 	@Override
 	public boolean setAmountInMultiPayment( BAMMultiPayment multipayment, BAMSubPayment payment, String amount ) 
 	{
-		if( ! BAMUtils.isBigDec( amount ) )
+		if( ! BAMFormats.isBigDec( amount ) )
 		{
 			JOptionPane.showMessageDialog(mainFrame, 
 					guiSettings.getPhrase("BIGDEC_PARSE_ERR_MSG"), 

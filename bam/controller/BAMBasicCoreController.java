@@ -10,7 +10,7 @@ import bam.core.*;
 import bam.gui.settings.BAMGUISettings;
 import bam.tools.BAMException;
 import bam.tools.BAMListableJson;
-import bam.tools.BAMUtils;
+import bam.tools.BAMFormats;
 
 public class BAMBasicCoreController implements BAMCoreController {
 
@@ -77,7 +77,7 @@ public class BAMBasicCoreController implements BAMCoreController {
 	@Override
 	public boolean editPayment( BAMPayment payment, String name, String amount, Date date, String purpose, String billNr, List<BAMTransaction> tList )
 	{
-		if( ! BAMUtils.isBigDec( amount ) )
+		if( ! BAMFormats.isBigDec( amount ) )
 		{
 			JOptionPane.showMessageDialog(null, 
 					guiSettings.getPhrase("BIGDEC_PARSE_ERR_MSG"), 
@@ -85,7 +85,7 @@ public class BAMBasicCoreController implements BAMCoreController {
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		BigDecimal amountBD = BAMUtils.toBigDec( amount );
+		BigDecimal amountBD = BAMFormats.parseBigDec( amount );
 		payment.getParent().addBalance( amountBD.subtract( payment.getAmount() ) );
 		payment.setValue( BAMPayment.NAME, name );
 		payment.setValue( BAMPayment.PURPOSE, purpose );
@@ -101,7 +101,7 @@ public class BAMBasicCoreController implements BAMCoreController {
 	@Override
 	public boolean addPayment( BAMSubAccount subaccount, String name, String amount, Date date, String purpose, String billNr, BAMTransaction transaction )
 	{	
-		if( ! BAMUtils.isBigDec( amount ) )
+		if( ! BAMFormats.isBigDec( amount ) )
 		{
 			JOptionPane.showMessageDialog(null, 
 					guiSettings.getPhrase("BIGDEC_PARSE_ERR_MSG"), 
@@ -109,7 +109,7 @@ public class BAMBasicCoreController implements BAMCoreController {
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		BigDecimal amountBD = BAMUtils.toBigDec( amount );
+		BigDecimal amountBD = BAMFormats.parseBigDec( amount );
 		BAMPayment payment = new BAMPayment(subaccount, name, amountBD, purpose, billNr, date, transaction );
 		subaccount.addPayment(payment);
 		subaccount.addBalance(amountBD);
@@ -135,9 +135,9 @@ public class BAMBasicCoreController implements BAMCoreController {
 	
 	@Override
 	public boolean setAmountInMultiPayment(BAMMultiPayment multipayment, BAMSubPayment payment, String amount) {
-		if( ! BAMUtils.isBigDec( amount ) )
+		if( ! BAMFormats.isBigDec( amount ) )
 			return false;
-		BigDecimal amountBD = BAMUtils.toBigDec(amount);
+		BigDecimal amountBD = BAMFormats.parseBigDec(amount);
 		multipayment.getParent().addBalance( amountBD.subtract( payment.getAmount() ) );
 		multipayment.setTransactionAmount(payment, amountBD);
 		return true;
