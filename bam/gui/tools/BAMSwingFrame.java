@@ -146,4 +146,5 @@ public abstract class BAMSwingFrame extends JFrame implements BAMModifiedListene
 		}
 		setVisible(true);
 	}
+	
 }

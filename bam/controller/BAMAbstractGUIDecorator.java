@@ -10,13 +10,11 @@ import bam.core.BAMUser;
 import bam.gui.settings.BAMFontSet;
 import bam.gui.tools.BAMSwingFrame;
 
-public abstract class BAMAbstractGUIDecorator implements BAMGUIController {
+public abstract class BAMAbstractGUIDecorator extends BAMAbstractDecorator {
 
-	
-	private BAMGUIController controller;
 		
-	public BAMAbstractGUIDecorator( BAMGUIController controller ) {
-		this.controller = controller;
+	public BAMAbstractGUIDecorator( BAMController controller ) {
+		super(controller);
 	}
 
 	@Override
@@ -71,8 +69,8 @@ public abstract class BAMAbstractGUIDecorator implements BAMGUIController {
 	}
 
 	@Override
-	public boolean setGUISettings(Locale locale, BAMFontSet fontSet, String icon) {
-		return controller.setGUISettings(locale, fontSet, icon);
+	public boolean setGUISettings(Locale locale, BAMFontSet fontSet, String iconFile) {
+		return controller.setGUISettings(locale, fontSet, iconFile);
 	}
 
 	@Override

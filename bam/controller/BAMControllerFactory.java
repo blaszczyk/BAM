@@ -9,20 +9,17 @@ public class BAMControllerFactory {
 
 	public static BAMController createController( BAMUser user, boolean hasConfirmMessages, boolean hasModifyUser, boolean hasGUISettingsModifiedListener )
 	{
-		BAMCoreController coreController = new BAMBasicCoreController( user );
+		BAMBasicController basicController = new BAMBasicController( user );
+		BAMController controller = basicController;
 		if( hasConfirmMessages )
-			coreController = new BAMDecoratorConfirmMsg( user, coreController );
+			controller = new BAMDecoratorConfirmMsg( user, controller );
 		if( hasModifyUser )
-			coreController = new BAMDecoratorModifyUser( user, coreController );
-		
-		BAMCompositeController controller = new BAMCompositeController( coreController );
-		
-		BAMGUIController guiController = new BAMBasicGUIController(user, controller);
-//		guiController = new BAMDecoratorLogFrames( guiController );
+			controller = new BAMDecoratorModifyUser( user, controller );
 		if(hasGUISettingsModifiedListener)
-			guiController = new BAMDecoratorGUISettingsModifiedListener( guiController );
-			
-		controller.setGUIController( guiController );
+			controller = new BAMDecoratorGUISettingsModifiedListener( controller );
+		controller = new BAMDecoratorNoDoubleFrames(controller);
+//		controller = new BAMDecoratorLogFrames( controller );
+		basicController.setController( controller );
 		return controller;
 	}
 }

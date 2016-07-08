@@ -343,4 +343,11 @@ public class BAMSwingStoreTransaction extends BAMSwingFrame{
 			subAccount = ((BAMPayment)targetPayment).getParent();
 	}
 	
+	public void addTransaction( BAMTransaction transaction)
+	{
+		if(tList.contains(transaction))
+			return;
+		tList.add(transaction);
+	}
+	
 }

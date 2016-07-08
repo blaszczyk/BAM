@@ -3,23 +3,54 @@ package bam.controller;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JOptionPane;
 
-import bam.core.*;
+import bam.core.BAMAccount;
+import bam.core.BAMListable;
+import bam.core.BAMMultiPayment;
+import bam.core.BAMPayment;
+import bam.core.BAMSubAccount;
+import bam.core.BAMSubPayment;
+import bam.core.BAMTransaction;
+import bam.core.BAMUser;
+import bam.gui.BAMSwingEditPayment;
+import bam.gui.BAMSwingFigo;
+import bam.gui.BAMSwingMainFrame;
+import bam.gui.BAMSwingPopup;
+import bam.gui.BAMSwingSettings;
+import bam.gui.BAMSwingSetupUser;
+import bam.gui.BAMSwingStoreTransaction;
+import bam.gui.settings.BAMFontSet;
 import bam.gui.settings.BAMGUISettings;
+import bam.gui.tools.BAMSwingFrame;
 import bam.tools.BAMException;
-import bam.tools.BAMListableJson;
 import bam.tools.BAMFormats;
+import bam.tools.BAMListableJson;
 
-public class BAMBasicCoreController implements BAMCoreController {
+public class BAMBasicController implements BAMController
+{
 
 	BAMGUISettings guiSettings = BAMGUISettings.getInstance();
-	BAMUser user;
+	private BAMUser user;
+	private BAMController controller;
 	
-	public BAMBasicCoreController( BAMUser user ) {
+
+	public BAMBasicController( BAMUser user)
+	{
 		this.user = user;
 	}
+
+	public void setController(BAMController controller)
+	{
+		this.controller = controller;
+	}
+
+	
+	/*
+	 *  Core Controlling Methods
+	 */
 
 
 	@Override
@@ -190,9 +221,12 @@ public class BAMBasicCoreController implements BAMCoreController {
 	@Override
 	public boolean setUserData(String figo_Account, String figo_PW, String bank_pin) 
 	{
-		user.setValue( BAMUser.FIGO_USER, figo_Account);
-		user.setValue( BAMUser.FIGO_PW, figo_PW);
-		user.setValue( BAMUser.BANK_PIN, bank_pin);
+		if(figo_Account != null)
+			user.setValue( BAMUser.FIGO_USER, figo_Account);
+		if(figo_PW != null)
+			user.setValue( BAMUser.FIGO_PW, figo_PW);
+		if(bank_pin != null)
+			user.setValue( BAMUser.BANK_PIN, bank_pin);
 		return true;
 	}
 
@@ -200,6 +234,97 @@ public class BAMBasicCoreController implements BAMCoreController {
 	public boolean addMultiPayment(BAMSubAccount subaccount, String name, String purpose, String searchName, String searchPurpose) {
 		BAMMultiPayment mp = new BAMMultiPayment( subaccount, name, purpose, searchName, searchPurpose );
 		subaccount.addMultiPayment( mp );
+		return true;
+	}
+	
+	/*
+	 * GUI Controlling Methods
+	 */
+
+
+	@Override
+	public BAMSwingFrame openMainFrame() {
+		return new BAMSwingMainFrame( user, controller );
+	}
+
+	@Override
+	public BAMSwingFrame openUpdateFrame() {
+		return new BAMSwingFigo( user, controller );
+	}
+
+	@Override
+	public BAMSwingFrame openPopup( BAMListable listable ) {
+		return new BAMSwingPopup( listable, controller );
+	}
+
+	@Override
+	public BAMSwingFrame openPopup( String transaction_id )
+	{
+		if(user.containsTransaction( transaction_id) )
+			return openPopup( user.getTransactionById(transaction_id) );
+		return null;
+	}
+
+	@Override
+	public BAMSwingFrame openStoreFrame(BAMTransaction t) {
+		return new BAMSwingStoreTransaction( user, controller, t );		
+	}
+
+	@Override
+	public BAMSwingFrame openStoreFrame(List<BAMTransaction> t) {
+		return new BAMSwingStoreTransaction( user, controller, t );		
+	}
+
+	@Override
+	public BAMSwingFrame openEditPayment( BAMPayment payment) {
+		return new BAMSwingEditPayment(payment, user, controller);
+	}
+
+	@Override
+	public BAMSwingFrame openSettings() {
+		return new BAMSwingSettings( controller );
+	}
+
+	@Override
+	public BAMSwingFrame openSetupUser(BAMUser user) {
+		return new BAMSwingSetupUser( user, controller );
+	}
+
+	@Override
+	public void closeFrame( BAMSwingFrame frame )
+	{
+		frame.setVisible( false );
+		frame.dispose();
+	}
+
+	@Override
+	public boolean setGUISettings(Locale locale, BAMFontSet fontSet, String iconFile) {
+		guiSettings.setLocale(locale);
+		guiSettings.setFontSet(fontSet);
+		guiSettings.setIcon(iconFile);
+		guiSettings.modifyAll();
+		return true;
+	}
+
+	@Override
+	public boolean loadGUISettings() {
+		try {
+			BAMListableJson.loadListable(guiSettings, "data/settings.bam" );
+		} catch (BAMException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean saveGUISettings() {
+		try {
+			BAMListableJson.saveListable(guiSettings, "data/settings.bam");
+		} catch (BAMException e) {
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 

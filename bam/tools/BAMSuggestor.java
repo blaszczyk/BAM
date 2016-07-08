@@ -5,46 +5,45 @@ import java.util.List;
 
 import bam.core.*;
 
-public class BAMSuggestor {
-	
+public class BAMSuggestor
+{
+
 	private List<BAMListable> suggestions = new ArrayList<>();
 	private BAMTransaction transaction;
 	private BAMUser user;
-	
+
 	public BAMSuggestor(BAMTransaction transaction, BAMUser user)
 	{
 		this.transaction = transaction;
 		this.user = user;
 	}
 
-
-	
 	public BAMSuggestor findSuggestion()
 	{
-		for( BAMAccount a : user.getAccounts())
-			for( BAMSubAccount sa : a.getSubAccounts() )
+		for (BAMAccount a : user.getAccounts())
+			for (BAMSubAccount sa : a.getSubAccounts())
 			{
-				for( BAMPayment p : sa.getPayments() )
-					if( p.suggestForTransaction(transaction) )
-						suggestions.add( p );
-				for( BAMMultiPayment mp : sa.getMultiPayments() )
-					if( mp.suggestForTransaction(transaction) )
+				for (BAMPayment p : sa.getPayments())
+					if (p.suggestForTransaction(transaction))
+						suggestions.add(p);
+				for (BAMMultiPayment mp : sa.getMultiPayments())
+					if (mp.suggestForTransaction(transaction))
 						suggestions.add(mp);
 			}
 		return this;
 	}
-	
+
 	public int getSuggestionCount()
 	{
 		return suggestions.size();
 	}
-	
+
 	public List<BAMListable> getSuggestions()
 	{
 		return suggestions;
 	}
-	
-	public BAMListable getSuggestion( int index)
+
+	public BAMListable getSuggestion(int index)
 	{
 		return suggestions.get(index);
 	}

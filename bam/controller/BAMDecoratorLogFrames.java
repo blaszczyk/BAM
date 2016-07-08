@@ -10,7 +10,7 @@ public class BAMDecoratorLogFrames extends BAMAbstractGUIDecorator{
 
 	private List<BAMSwingFrame> frames = new ArrayList<>();
 	
-	public BAMDecoratorLogFrames(BAMGUIController controller) {
+	public BAMDecoratorLogFrames(BAMController controller) {
 		super(controller);
 	}
 
@@ -21,7 +21,7 @@ public class BAMDecoratorLogFrames extends BAMAbstractGUIDecorator{
 
 	@Override
 	protected void onClose(BAMSwingFrame frame) {
-		printFrames();
+//		printFrames();
 		int i = frames.indexOf(frame);
 		if( i > -1 )
 			frames.remove(i);

@@ -7,7 +7,7 @@ public class BAMDecoratorGUISettingsModifiedListener extends BAMAbstractGUIDecor
 
 	private BAMGUISettings guiSettings = BAMGUISettings.getInstance();
 	
-	public BAMDecoratorGUISettingsModifiedListener(BAMGUIController controller) {
+	public BAMDecoratorGUISettingsModifiedListener(BAMController controller) {
 		super(controller);
 	}
 

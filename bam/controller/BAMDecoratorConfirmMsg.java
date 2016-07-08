@@ -1,6 +1,5 @@
 package bam.controller;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -11,28 +10,15 @@ import bam.gui.tools.BAMSwingFrame;
 import bam.tools.BAMFormats;
 import bam.core.*;
 
-public class BAMDecoratorConfirmMsg implements BAMCoreController {
+public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 
 	BAMGUISettings guiSettings = BAMGUISettings.getInstance();
 	BAMUser user;
-	BAMCoreController controller;
 	BAMSwingFrame mainFrame = null;
 
-	public BAMDecoratorConfirmMsg( BAMUser user , BAMCoreController controller ) {
+	public BAMDecoratorConfirmMsg( BAMUser user , BAMController controller ) {
+		super(controller);
 		this.user = user;
-		this.controller = controller;
-	}
-
-
-	@Override
-	public boolean loadUser() {
-		return controller.loadUser();
-	}
-	
-	@Override
-	public boolean saveUser()
-	{
-		return controller.saveUser();
 	}
 
 	@Override	
@@ -102,12 +88,6 @@ public class BAMDecoratorConfirmMsg implements BAMCoreController {
 	}
 
 	@Override
-	public boolean addTransactionToMultiPayment( BAMMultiPayment multipayment , BAMTransaction transaction ) 
-	{
-		return controller.addTransactionToMultiPayment(multipayment, transaction);
-	}
-
-	@Override
 	public boolean setAmountInMultiPayment( BAMMultiPayment multipayment, BAMSubPayment payment, String amount ) 
 	{
 		if( ! BAMFormats.isBigDec( amount ) )
@@ -141,37 +121,6 @@ public class BAMDecoratorConfirmMsg implements BAMCoreController {
 			return controller.deleteMultiPayment(multipayment);
 		}
 		return false;
-	}
-	
-	
-	@Override
-	public boolean addTransactionToPayment( BAMPayment payment , BAMTransaction transaction )  
-	{
-		return controller.addTransactionToPayment(payment, transaction);
-	}
-
-	@Override
-	public boolean setIBAN( BAMAccount account, String iban)
-	{
-		return controller.setIBAN(account, iban);
-	}
-
-	@Override
-	public boolean setBalance( BAMAccount account, BigDecimal balance)
-	{
-		return controller.setBalance(account, balance);
-	}
-
-	@Override
-	public boolean addTransaction( BAMAccount account, BAMTransaction transaction )
-	{
-		return controller.addTransaction(account, transaction);
-	}
-	
-	@Override 
-	public boolean sortTransactions( BAMAccount account )
-	{
-		return controller.sortTransactions(account);
 	}
 
 	@Override

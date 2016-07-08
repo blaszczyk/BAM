@@ -11,12 +11,11 @@ import bam.core.BAMSubAccount;
 import bam.core.BAMSubPayment;
 import bam.core.BAMTransaction;
 
-public abstract class BAMAbstractCoreDecorator implements BAMCoreController {
+public abstract class BAMAbstractCoreDecorator extends BAMAbstractDecorator {
 
-	public BAMCoreController controller;
 	
-	public BAMAbstractCoreDecorator( BAMCoreController controller) {
-		this.controller = controller;
+	public BAMAbstractCoreDecorator( BAMController controller) {
+		super(controller);
 	}
 
 	@Override

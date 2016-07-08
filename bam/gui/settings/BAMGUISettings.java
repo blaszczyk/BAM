@@ -19,127 +19,133 @@ import javax.swing.border.Border;
 import bam.core.BAMModifyableListable;
 import bam.tools.BAMException;
 
-public class BAMGUISettings extends BAMModifyableListable {
+public class BAMGUISettings extends BAMModifyableListable
+{
 
 	public static final String ICON = "ICON";
 	public static final String FONT = "FONT";
 	public static final String LOCALE = "LOCALE";
-	
-	private static Map<String,Class<?>> guiSettingsClassMap;
-	
+
+	private static Map<String, Class<?>> guiSettingsClassMap;
+
 	public static List<BAMFontSet> fontsets;
 	public static List<Locale> locales;
-		
+
 	private BAMLanguage language;
 	private String icon;
 	private BAMFontSet fontSet;
 	private Locale locale;
 	private Border border;
-	
-	
+
 	private static BAMGUISettings instance;
-	
+
 	public static BAMGUISettings getInstance()
 	{
-		if( instance == null)
+		if (instance == null)
 			instance = new BAMGUISettings();
 		return instance;
 	}
-	
-	private BAMGUISettings () {
 
-		BAMFontSet[] fontsetsArray = {BAMFontSet.SMALL_SET, BAMFontSet.MEDIUM_SET, BAMFontSet.BIG_SET};
-		fontsets = Arrays.asList( fontsetsArray );
+	private BAMGUISettings()
+	{
+
+		BAMFontSet[] fontsetsArray = { BAMFontSet.SMALL_SET, BAMFontSet.MEDIUM_SET, BAMFontSet.BIG_SET };
+		fontsets = Arrays.asList(fontsetsArray);
 
 		Locale[] localesArray = { Locale.GERMAN, Locale.ENGLISH };
-		locales = Arrays.asList( localesArray );
-		
-		border = BorderFactory.createLineBorder( new Color(0,0,0,0) , 5 );
+		locales = Arrays.asList(localesArray);
 
-//		icon = ICON2;
-//		setFontSet( BAMFontSet.MEDIUM_SET );
-//		setLocale( Locale.GERMAN );
+		border = BorderFactory.createLineBorder(new Color(0, 0, 0, 0), 5);
+
+		// icon = ICON2;
+		// setFontSet( BAMFontSet.MEDIUM_SET );
+		// setLocale( Locale.GERMAN );
 	}
 
 	public BufferedImage getIcon()
 	{
-		return BAMGraphics.getImage((String)getValue(ICON));
+		return BAMGraphics.getImage((String) getValue(ICON));
 	}
-	
+
 	public Border getBorder()
 	{
 		return border;
 	}
 
-	public LayoutManager getBorderLayout() {
-		return new BorderLayout(5,5);
+	public LayoutManager getBorderLayout()
+	{
+		return new BorderLayout(5, 5);
 	}
 
-	public String getPhrase( String key )
+	public String getPhrase(String key)
 	{
 		return language.getPhrase(key);
 	}
 
-	public boolean hasPhrase(String key) {
+	public boolean hasPhrase(String key)
+	{
 		return language.hasPhrase(key);
 	}
-	
-	public void loadLanguage( Locale locale )
+
+	public void loadLanguage(Locale locale)
 	{
-		try {
-			language = new BAMLanguage( locale );
-		} catch (BAMException e) {			
+		try
+		{
+			language = new BAMLanguage(locale);
+		}
+		catch (BAMException e)
+		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, 
-					e.getErrorMessage(), 
-					"Error!",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.getErrorMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
-	public void setFontSet( BAMFontSet fontSet )
+
+	public void setFontSet(BAMFontSet fontSet)
 	{
 		this.fontSet = fontSet;
-		UIManager.put( "Table.font", fontSet.getFont( BAMFontSet.TABLE ) );
-		UIManager.put( "TableHeader.font", fontSet.getFont( BAMFontSet.TABLE ) );
-		UIManager.put( "PopupMenu.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "Label.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "Button.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "Tree.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "RadioButton.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "RadioButtonMenuItem.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "TextField.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "TextPane.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "OptionPane.messageFont", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "ObtionPane.buttonFont", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "JTree.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "CheckBox.font", fontSet.getFont(BAMFontSet.MEDIUM) );
-		UIManager.put( "MenuBar.font", fontSet.getFont(BAMFontSet.MEDIUM));
-		UIManager.put( "Menu.font", fontSet.getFont(BAMFontSet.MEDIUM));
-		UIManager.put( "MenuItem.font", fontSet.getFont(BAMFontSet.MEDIUM));
-		UIManager.put( "List.font", fontSet.getFont(BAMFontSet.MEDIUM));
-		UIManager.put( "ComboBox.font", fontSet.getFont(BAMFontSet.MEDIUM));
-		UIManager.put( "TabbedPane.font", fontSet.getFont(BAMFontSet.MEDIUM));
-		
+		UIManager.put("Table.font", fontSet.getFont(BAMFontSet.TABLE));
+		UIManager.put("TableHeader.font", fontSet.getFont(BAMFontSet.TABLE));
+		UIManager.put("PopupMenu.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("Label.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("Button.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("Tree.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("RadioButton.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("RadioButtonMenuItem.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("TextField.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("TextPane.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("OptionPane.messageFont", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("ObtionPane.buttonFont", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("JTree.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("CheckBox.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("MenuBar.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("Menu.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("MenuItem.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("List.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("ComboBox.font", fontSet.getFont(BAMFontSet.MEDIUM));
+		UIManager.put("TabbedPane.font", fontSet.getFont(BAMFontSet.MEDIUM));
+
 	}
-	
-	public Font getFont( int font )
+
+	public Font getFont(int font)
 	{
 		return fontSet.getFont(font);
 	}
 
-	public Locale getLocale() {
+	public Locale getLocale()
+	{
 		return locale;
 	}
 
-	public void setLocale(Locale locale) {
-		if( this.locale == locale )
+	public void setLocale(Locale locale)
+	{
+		if (this.locale == locale)
 			return;
 		this.locale = locale;
 		loadLanguage(locale);
 	}
 
-	public BAMFontSet getFontSet() {
+	public BAMFontSet getFontSet()
+	{
 		return fontSet;
 	}
 
@@ -147,19 +153,21 @@ public class BAMGUISettings extends BAMModifyableListable {
 	{
 		return icon;
 	}
-	
-	public void setIcon(String icon) {
+
+	public void setIcon(String icon)
+	{
 		this.icon = icon;
 	}
-	
+
 	public void modifyAll()
 	{
 		fireModifiedEvents();
 	}
-	
+
 	@Override
-	public Object getValue( String key ) {
-		switch( key )
+	public Object getValue(String key)
+	{
+		switch (key)
 		{
 		case ICON:
 			return icon;
@@ -170,38 +178,41 @@ public class BAMGUISettings extends BAMModifyableListable {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public void setValue( String key, Object o )
+	public void setValue(String key, Object o)
 	{
 		String value = (String) o;
-		switch( key )
+		switch (key)
 		{
 		case ICON:
-			setIcon( value );
+			setIcon(value);
 			return;
 		case FONT:
-			setFontSet( fontsets.get(Integer.parseInt( value )) );
+			setFontSet(fontsets.get(Integer.parseInt(value)));
 			return;
 		case LOCALE:
-			setLocale( locales.get(Integer.parseInt( value )) );
+			setLocale(locales.get(Integer.parseInt(value)));
 			return;
 		}
 	}
 
 	@Override
-	public boolean isList(String key) {
+	public boolean isList(String key)
+	{
 		return false;
 	}
 
 	@Override
-	protected Map<String, Class<?>> getClassMap() {
+	protected Map<String, Class<?>> getClassMap()
+	{
 		return guiSettingsClassMap;
 	}
 
 	@Override
-	protected void createClassMap() {
-		if(guiSettingsClassMap == null)
+	protected void createClassMap()
+	{
+		if (guiSettingsClassMap == null)
 		{
 			guiSettingsClassMap = new HashMap<>();
 			guiSettingsClassMap.put(ICON, String.class);
@@ -209,6 +220,5 @@ public class BAMGUISettings extends BAMModifyableListable {
 			guiSettingsClassMap.put(LOCALE, String.class);
 		}
 	}
-
 
 }

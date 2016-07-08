@@ -65,8 +65,8 @@ public class BAMLanguage {
 	{
 		if( phrases.containsKey(key) )
 			return phrases.get(key);
-		System.out.println(key);
-		return "Key " + key + " not Found";
+		System.out.println("Key " + key + " not Found.");
+		return ">>" + key + "<<";
 	}
 
 	public boolean hasPhrase(String key) 

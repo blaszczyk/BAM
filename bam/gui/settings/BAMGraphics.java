@@ -23,50 +23,48 @@ public class BAMGraphics
 	public static final String ICON1 = "icon1.bmp";
 	public static final String ICON2 = "icon2.bmp";
 	public static final String ICON3 = "icon3.bmp";
-		
-	private static Map<String,BufferedImage> images = new HashMap<>();
+
+	private static final String PATH = "data/";
 	
+	private static Map<String, BufferedImage> images = new HashMap<>();
+
 	private BAMGraphics()
 	{
-//		loadGraphics( USER, ACCOUNT, SUBACCOUNT, PAYMENT_LIST, MULTIPAYMENT_LIST, PAYMENT, MULTIPAYMENT);
 	}
-	
-	private static  void loadGraphics( String... filenames )
+
+	private static void loadGraphics(String... filenames)
 	{
-		for( String filename : filenames )
-			loadGraphic( filename);
+		for (String filename : filenames)
+			loadGraphic(filename);
 	}
-	
-	
-	
-	private static void loadGraphic( String filename )
+
+	private static void loadGraphic(String filename)
 	{
-		String path = "data/";
 		BufferedImage img;
 		try
 		{
-			img = ImageIO.read( new File( path + filename ) );
+			img = ImageIO.read(new File(PATH + filename));
 		}
 		catch (IOException e)
 		{
 			System.err.println("Image " + filename + " not found.");
-			byte[] b = { (byte) 0}; 
+			byte[] b = { (byte) 0 };
 			IndexColorModel icm = new IndexColorModel(8, 1, b, b, b);
-			img = new BufferedImage(16, 16, BufferedImage.TYPE_BYTE_INDEXED,icm);
+			img = new BufferedImage(16, 16, BufferedImage.TYPE_BYTE_INDEXED, icm);
 		}
-		images.put( filename, img );
+		images.put(filename, img);
 	}
-	
-	public static BufferedImage getImage( String filename )
+
+	public static BufferedImage getImage(String filename)
 	{
-		if(! images.containsKey(filename))
+		if (!images.containsKey(filename))
 			loadGraphics(filename);
 		return images.get(filename);
 	}
-	
-	public static ImageIcon getImageIcon( String filename )
+
+	public static ImageIcon getImageIcon(String filename)
 	{
-		return new ImageIcon( getImage( filename) );
+		return new ImageIcon(getImage(filename));
 	}
-	
+
 }

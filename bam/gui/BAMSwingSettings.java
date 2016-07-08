@@ -8,7 +8,6 @@ import javax.swing.*;
 
 import bam.controller.BAMController;
 import bam.gui.settings.BAMFontSet;
-import bam.gui.settings.BAMGUISettings;
 import bam.gui.settings.BAMGraphics;
 import bam.gui.tools.BAMIconRadioButton;
 import bam.gui.tools.BAMSwingFrame;
@@ -19,15 +18,20 @@ public class BAMSwingSettings extends BAMSwingFrame {
 	private JPanel center = new JPanel();
 	private JPanel south = new JPanel(); 
 	
-	private Locale locale;
-	private BAMFontSet fontSet;
-	private String iconFile = (String) guiSettings.getValue( BAMGUISettings.ICON);
+	private Locale locale = guiSettings.getLocale();
+	private String iconFile = guiSettings.getIconFile();
+	private BAMFontSet fontSet = guiSettings.getFontSet();
+	
+	ButtonGroup languageGroup = new ButtonGroup();
+	ButtonGroup iconGroup = new ButtonGroup();
+	ButtonGroup fontGroup = new ButtonGroup();
+	
+	JPanel languagePanel = new JPanel( new GridLayout(3,1) );
+	JPanel iconPanel = new JPanel( new GridLayout(4,1) );
+	JPanel fontPanel = new JPanel( new GridLayout(4,1) );
 	
 	public BAMSwingSettings(BAMController controller) {
 		super("SETTINGS", controller);
-		locale = guiSettings.getLocale();
-		fontSet = guiSettings.getFontSet();
-		iconFile = guiSettings.getIconFile();
 		setMinimumSize( new Dimension(400,100 ));
 		drawAll();
 		setComponents(null,null,center,null,south);
@@ -41,78 +45,25 @@ public class BAMSwingSettings extends BAMSwingFrame {
 		/*
 		 *  Language Selection
 		 */
-		JRadioButton english = new JRadioButton("english", locale == Locale.ENGLISH );
-		english.addActionListener( e -> { 
-			locale = Locale.ENGLISH;
-		});
-		JRadioButton german = new JRadioButton("deutsch", locale == Locale.GERMAN );
-		german.addActionListener( e -> {
-			locale = Locale.GERMAN;
-		});
-		ButtonGroup languages = new ButtonGroup();
-		languages.add(english);
-		languages.add(german);
-		
-		JPanel languagePanel = new JPanel( new GridLayout(3,1) );
 		languagePanel.add( new JLabel( guiSettings.getPhrase("LANGUAGE") + ":" ) );
-		languagePanel.add(english);
-		languagePanel.add(german);
-
+		createLanguageButton("United-Kingdom-icon.png", Locale.ENGLISH );
+		createLanguageButton("Germany-icon.png", Locale.GERMAN);
+		
 		/*
 		 *  Font Size Selection
 		 */
-		JRadioButton smallFont = new JRadioButton( guiSettings.getPhrase("SMALL"), fontSet == BAMFontSet.SMALL_SET );
-		smallFont.addActionListener( e -> {
-			fontSet = BAMFontSet.SMALL_SET;
-		});
-		JRadioButton mediumFont = new JRadioButton( guiSettings.getPhrase("MEDIUM"), fontSet == BAMFontSet.MEDIUM_SET );
-		mediumFont.addActionListener( e -> {
-			fontSet = BAMFontSet.MEDIUM_SET;
-		});
-		JRadioButton bigFont = new JRadioButton( guiSettings.getPhrase("BIG"), fontSet == BAMFontSet.BIG_SET );
-		bigFont.addActionListener( e -> {
-			fontSet = BAMFontSet.BIG_SET;
-		});
-		
-		ButtonGroup fonts = new ButtonGroup();
-		fonts.add(smallFont);
-		fonts.add(mediumFont);
-		fonts.add(bigFont);
-		
-		JPanel fontPanel = new JPanel( new GridLayout(4,1) );
 		fontPanel.add( new JLabel( guiSettings.getPhrase("FONT_SIZE") + ":" ) );
-		fontPanel.add(smallFont);
-		fontPanel.add(mediumFont);
-		fontPanel.add(bigFont);
+		createFontSetButton("SMALL", BAMFontSet.SMALL_SET);
+		createFontSetButton("MEDIUM", BAMFontSet.MEDIUM_SET);
+		createFontSetButton("BIG", BAMFontSet.BIG_SET);
 		
 		/*
 		 * Icon Selection
 		 */
-
-		BAMIconRadioButton icon1 = new BAMIconRadioButton( BAMGraphics.ICON1 , iconFile );
-		icon1.addActionListener( e -> {
-			iconFile  = BAMGraphics.ICON1;		
-		});
-		BAMIconRadioButton icon2 = new BAMIconRadioButton( BAMGraphics.ICON2 , iconFile );
-		icon2.addActionListener( e -> {
-			iconFile  = BAMGraphics.ICON2;
-		});
-		BAMIconRadioButton icon3 = new BAMIconRadioButton( BAMGraphics.ICON3 , iconFile );
-		icon3.addActionListener( e -> {
-			iconFile  = BAMGraphics.ICON3;
-		});
-		
-		ButtonGroup icons = new ButtonGroup();
-		icons.add(icon1.getRadioButton());
-		icons.add(icon2.getRadioButton());
-		icons.add(icon3.getRadioButton());
-
-		JPanel iconPanel = new JPanel( new GridLayout(4,1) );
 		iconPanel.add( new JLabel( " " + guiSettings.getPhrase("ICON") + ": " ) ); //, SwingConstants.RIGHT ) );
-		iconPanel.add(icon1);
-		iconPanel.add(icon2);
-		iconPanel.add(icon3);
-		
+		createIconButton( BAMGraphics.ICON1 );
+		createIconButton( BAMGraphics.ICON2 );
+		createIconButton( BAMGraphics.ICON3 );
 		
 		center.setVisible(false);
 		center.removeAll();
@@ -150,6 +101,41 @@ public class BAMSwingSettings extends BAMSwingFrame {
 		south.add(apply);
 		south.add(cancel);
 		south.setVisible(true);
+	}
+	
+	private JRadioButton createFontSetButton( String label, BAMFontSet fontSet)
+	{
+		JRadioButton button = new JRadioButton( guiSettings.getPhrase(label), this.fontSet == fontSet );
+		button.setFont(fontSet.getFont( BAMFontSet.MEDIUM ));
+		fontGroup.add(button);
+		fontPanel.add(button);
+		button.addActionListener( e -> {
+			this.fontSet = fontSet;
+		});
+		
+		return button;
+	}
+	
+	private BAMIconRadioButton createLanguageButton( String iconFile, Locale locale)
+	{
+		BAMIconRadioButton button = new BAMIconRadioButton( iconFile, this.locale == locale );
+		languageGroup.add(button.getRadioButton());
+		languagePanel.add(button);
+		button.addActionListener( e -> {
+			this.locale = locale;
+		});
+		return button;
+	}
+	
+	private BAMIconRadioButton createIconButton( String iconFile )
+	{
+		BAMIconRadioButton button = new BAMIconRadioButton( iconFile, this.iconFile.equals(iconFile ) );
+		iconGroup.add(button.getRadioButton());
+		iconPanel.add(button);
+		button.addActionListener( e -> {
+			this.iconFile  = iconFile;		
+		});
+		return button;
 	}
 }
 

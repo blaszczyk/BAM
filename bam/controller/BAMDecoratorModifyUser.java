@@ -6,7 +6,7 @@ public class BAMDecoratorModifyUser extends BAMAbstractCoreDecorator {
 
 	BAMUser user;
 	
-	public BAMDecoratorModifyUser( BAMUser user, BAMCoreController controller) {
+	public BAMDecoratorModifyUser( BAMUser user, BAMController controller) {
 		super(controller);
 		this.user = user;
 	}
