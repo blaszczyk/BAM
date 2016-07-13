@@ -1,5 +1,5 @@
 package bam.core;
 
-public interface BAMGenericPayment {
+public interface BAMGenericPayment extends BAMListable{
 
 }

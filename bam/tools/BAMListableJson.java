@@ -85,7 +85,12 @@ public class BAMListableJson {
 			{
 				String value = reader.nextString();
 				if( listable.getClass(key) == Date.class )
-					listable.setValue( key, BAMFormats.parseDateDisplayFormat( value ) );
+					try {
+						listable.setValue( key, BAMFormats.parseDateSaveFormat( value ) );
+					} catch (BAMException e) {
+						System.err.println(e.getErrorMessage());
+						e.printStackTrace();
+					}
 				else if( listable.getClass(key) == BigDecimal.class )
 					listable.setValue( key, BAMFormats.parseBigDec( value ) );
 				else

@@ -5,14 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import bam.core.BAMAccount;
-import bam.core.BAMListable;
-import bam.core.BAMMultiPayment;
-import bam.core.BAMPayment;
-import bam.core.BAMSubAccount;
-import bam.core.BAMSubPayment;
-import bam.core.BAMTransaction;
-import bam.core.BAMUser;
+import bam.core.*;
 import bam.gui.settings.BAMFontSet;
 import bam.gui.tools.BAMSwingFrame;
 
@@ -75,6 +68,11 @@ public abstract class BAMAbstractDecorator implements BAMController
 	}
 
 	@Override
+	public boolean editMultiPayment(BAMMultiPayment multipayment, String name, String purpose, String searchName, String searchPurpose)
+	{
+		return controller.editMultiPayment(multipayment, name, purpose, searchName, searchPurpose);
+	}
+	@Override
 	public boolean removeTransactionfromMultiPayment(BAMMultiPayment multipayment, BAMSubPayment payment)
 	{
 		return controller.removeTransactionfromMultiPayment(multipayment, payment);
@@ -135,9 +133,9 @@ public abstract class BAMAbstractDecorator implements BAMController
 	}
 
 	@Override
-	public BAMSwingFrame openPopup(BAMListable listable)
+	public BAMSwingFrame openPopup(BAMGenericPayment gPayment)
 	{
-		return controller.openPopup(listable);
+		return controller.openPopup(gPayment);
 	}
 
 	@Override
@@ -165,9 +163,9 @@ public abstract class BAMAbstractDecorator implements BAMController
 	}
 
 	@Override
-	public BAMSwingFrame openEditPayment(BAMPayment payment)
+	public BAMSwingFrame openEditFrame(BAMGenericPayment gPayment)
 	{
-		return controller.openEditPayment(payment);
+		return controller.openEditFrame(gPayment);
 	}
 
 	@Override

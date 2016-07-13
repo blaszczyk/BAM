@@ -59,7 +59,13 @@ public abstract class BAMAbstractCoreDecorator extends BAMAbstractDecorator {
 	public boolean addTransactionToMultiPayment(BAMMultiPayment multipayment, BAMTransaction transaction) {
 		return doAction( controller.addTransactionToMultiPayment(multipayment, transaction) );
 	}
-
+	
+	@Override
+	public boolean editMultiPayment(BAMMultiPayment multipayment, String name, String purpose, String searchName, String searchPurpose) {
+		return doAction( controller.editMultiPayment(multipayment, name, purpose, searchName, searchPurpose));
+	}
+	
+	
 	@Override
 	public boolean removeTransactionfromMultiPayment(BAMMultiPayment multipayment, BAMSubPayment payment) {
 		return doAction( controller.removeTransactionfromMultiPayment(multipayment, payment) );

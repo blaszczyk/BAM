@@ -5,7 +5,7 @@ import java.util.*;
 
 
 @SuppressWarnings("unchecked")
-public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPayment {
+public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPayment, Iterable<BAMSubPayment> {
 	
 	public static final String NAME = "NAME";
 	public static final String PURPOSE = "PURPOSE";
@@ -57,7 +57,7 @@ public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPa
 		return parent;
 	}
 
-	public List<BAMSubPayment> getPayments() {
+	private List<BAMSubPayment> getPayments() {
 		return (List<BAMSubPayment>) getValue( PAYMENTS );
 	}
 
@@ -150,7 +150,16 @@ public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPa
 		return t.getName().toLowerCase().contains( getSearchName().toLowerCase() ) &&
 				t.getPurpose().toLowerCase().contains( getSearchPurpose().toLowerCase() );
 	}
+
+	/*
+	 * Iterable Method
+	 */
 	
+	@Override
+	public Iterator<BAMSubPayment> iterator()
+	{
+		return getPayments().iterator();
+	}
 	/*
 	 * Listable Methods
 	 */
@@ -174,6 +183,13 @@ public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPa
 	}
 
 	@Override
+	public Iterator<String> getKeyIterator()
+	{
+		String[] keys = {NAME,PURPOSE,SEARCH_NAME,SEARCH_PURPOSE,PAYMENTS};
+		return Arrays.asList(keys).iterator();
+	}
+	
+	@Override
 	public boolean isList(String key) {
 		return key.equals(PAYMENTS);
 	}
@@ -182,4 +198,5 @@ public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPa
 	protected Map<String, Class<?>> getClassMap() {
 		return multipaymentClassMap;
 	}
+
 }

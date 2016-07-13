@@ -10,7 +10,7 @@ public class BAMFormats
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
 	private static DecimalFormat decimalFileFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 	private static DateFormat dateDisplayFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-	private static DateFormat dateSaveFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy");
+	private static DateFormat dateSaveFormat = new SimpleDateFormat("dd.MM.yyyy");
 
 	private BAMFormats()
 	{
@@ -78,7 +78,7 @@ public class BAMFormats
 		return true;
 	}
 
-	public static Date parseDateDisplayFormat(String in)
+	public static Date parseDateDisplayFormat(String in) throws BAMException
 	{
 		try
 		{
@@ -86,7 +86,7 @@ public class BAMFormats
 		}
 		catch (ParseException e)
 		{
-			return null;
+			throw new BAMException("Error Parsing Date from " + in);
 		}
 	}
 }

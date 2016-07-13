@@ -8,7 +8,7 @@ import bam.core.*;
 public class BAMSuggestor
 {
 
-	private List<BAMListable> suggestions = new ArrayList<>();
+	private List<BAMGenericPayment> suggestions = new ArrayList<>();
 	private BAMTransaction transaction;
 	private BAMUser user;
 
@@ -38,12 +38,12 @@ public class BAMSuggestor
 		return suggestions.size();
 	}
 
-	public List<BAMListable> getSuggestions()
+	public List<BAMGenericPayment> getSuggestions()
 	{
 		return suggestions;
 	}
 
-	public BAMListable getSuggestion(int index)
+	public BAMGenericPayment getSuggestion(int index)
 	{
 		return suggestions.get(index);
 	}

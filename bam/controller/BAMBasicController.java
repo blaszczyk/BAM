@@ -7,21 +7,8 @@ import java.util.Locale;
 
 import javax.swing.JOptionPane;
 
-import bam.core.BAMAccount;
-import bam.core.BAMListable;
-import bam.core.BAMMultiPayment;
-import bam.core.BAMPayment;
-import bam.core.BAMSubAccount;
-import bam.core.BAMSubPayment;
-import bam.core.BAMTransaction;
-import bam.core.BAMUser;
-import bam.gui.BAMSwingEditPayment;
-import bam.gui.BAMSwingFigo;
-import bam.gui.BAMSwingMainFrame;
-import bam.gui.BAMSwingPopup;
-import bam.gui.BAMSwingSettings;
-import bam.gui.BAMSwingSetupUser;
-import bam.gui.BAMSwingStoreTransaction;
+import bam.core.*;
+import bam.gui.*;
 import bam.gui.settings.BAMFontSet;
 import bam.gui.settings.BAMGUISettings;
 import bam.gui.tools.BAMSwingFrame;
@@ -165,6 +152,16 @@ public class BAMBasicController implements BAMController
 	}
 	
 	@Override
+	public boolean editMultiPayment(BAMMultiPayment multipayment, String name, String purpose, String searchName, String searchPurpose)
+	{
+		multipayment.setValue( BAMMultiPayment.NAME, name);
+		multipayment.setValue( BAMMultiPayment.PURPOSE, purpose);
+		multipayment.setValue( BAMMultiPayment.SEARCH_NAME, searchName );
+		multipayment.setValue( BAMMultiPayment.SEARCH_PURPOSE, searchPurpose );
+		return true;
+	}
+	
+	@Override
 	public boolean setAmountInMultiPayment(BAMMultiPayment multipayment, BAMSubPayment payment, String amount) {
 		if( ! BAMFormats.isBigDec( amount ) )
 			return false;
@@ -176,7 +173,7 @@ public class BAMBasicController implements BAMController
 
 	@Override
 	public boolean deleteMultiPayment(BAMMultiPayment multipayment) {
-		for( BAMSubPayment p : multipayment.getPayments() )
+		for( BAMSubPayment p : multipayment )
 			removeTransactionfromMultiPayment(multipayment, p);
 		multipayment.getParent().removeMultiPayment(multipayment);
 		return true;
@@ -249,12 +246,12 @@ public class BAMBasicController implements BAMController
 
 	@Override
 	public BAMSwingFrame openUpdateFrame() {
-		return new BAMSwingFigo( user, controller );
+		return new BAMSwingFigoFrame( user, controller );
 	}
 
 	@Override
-	public BAMSwingFrame openPopup( BAMListable listable ) {
-		return new BAMSwingPopup( listable, controller );
+	public BAMSwingFrame openPopup( BAMGenericPayment gPayment ) {
+		return new BAMSwingPopupFrame( gPayment, controller );
 	}
 
 	@Override
@@ -267,27 +264,27 @@ public class BAMBasicController implements BAMController
 
 	@Override
 	public BAMSwingFrame openStoreFrame(BAMTransaction t) {
-		return new BAMSwingStoreTransaction( user, controller, t );		
+		return new BAMSwingStoreTransactionFrame( user, controller, t );		
 	}
 
 	@Override
 	public BAMSwingFrame openStoreFrame(List<BAMTransaction> t) {
-		return new BAMSwingStoreTransaction( user, controller, t );		
+		return new BAMSwingStoreTransactionFrame( user, controller, t );		
 	}
 
 	@Override
-	public BAMSwingFrame openEditPayment( BAMPayment payment) {
-		return new BAMSwingEditPayment(payment, user, controller);
+	public BAMSwingFrame openEditFrame( BAMGenericPayment gPayment) {
+		return new BAMSwingEditFrame(gPayment, user, controller);
 	}
 
 	@Override
 	public BAMSwingFrame openSettings() {
-		return new BAMSwingSettings( controller );
+		return new BAMSwingSettingsFrame( controller );
 	}
 
 	@Override
 	public BAMSwingFrame openSetupUser(BAMUser user) {
-		return new BAMSwingSetupUser( user, controller );
+		return new BAMSwingSetupUserFrame( user, controller );
 	}
 
 	@Override

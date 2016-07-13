@@ -1,5 +1,7 @@
 package bam.controller;
 
+import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,11 +12,12 @@ import bam.gui.tools.BAMSwingFrame;
 import bam.tools.BAMFormats;
 import bam.core.*;
 
-public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
+public class BAMDecoratorConfirmMsg extends BAMAbstractGUIDecorator {
 
-	BAMGUISettings guiSettings = BAMGUISettings.getInstance();
-	BAMUser user;
-	BAMSwingFrame mainFrame = null;
+	
+	private static BAMGUISettings guiSettings = BAMGUISettings.getInstance();
+	private BAMUser user;
+	private List<BAMSwingFrame> frameList = new ArrayList<BAMSwingFrame>();
 
 	public BAMDecoratorConfirmMsg( BAMUser user , BAMController controller ) {
 		super(controller);
@@ -26,7 +29,7 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 	{
 		if( user.isModified() )
 		{
-			int option = JOptionPane.showConfirmDialog( mainFrame, 
+			int option = JOptionPane.showConfirmDialog( getActiveFrame(), 
 					guiSettings.getPhrase("EXIT_CONFIRM_MSG"),
 					guiSettings.getPhrase("EXIT_CONFIRM_TTL"),
 					JOptionPane.YES_NO_CANCEL_OPTION, 
@@ -45,7 +48,7 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 	@Override
 	public boolean deletePayment(BAMPayment payment)
 	{
-		if( JOptionPane.showConfirmDialog( mainFrame, 
+		if( JOptionPane.showConfirmDialog( getActiveFrame(), 
 				guiSettings.getPhrase("DEL_PAYMENT")+ " " + payment.getName() + " - " + payment.getPurpose() + " ?", 
 				guiSettings.getPhrase("DEL_PAYMENT"), 
 				JOptionPane.YES_NO_OPTION, 
@@ -57,7 +60,7 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 	@Override
 	public boolean editPayment( BAMPayment payment, String name, String amount, Date date, String purpose, String billNr, List<BAMTransaction> tList )
 	{
-		if( JOptionPane.showConfirmDialog( mainFrame, 
+		if( JOptionPane.showConfirmDialog( getActiveFrame(), 
 				guiSettings.getPhrase("EDIT_PAYMENT")+ " " + payment.getName() + " - " + payment.getPurpose() + " ?", 
 				guiSettings.getPhrase("EDIT_PAYMENT"), 
 				JOptionPane.YES_NO_OPTION, 
@@ -66,17 +69,23 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 		return false;
 	}
 
+
+
 	@Override
-	public boolean addPayment( BAMSubAccount subaccount, String name, String amount, Date date, String purpose, String billNr, BAMTransaction transaction )
+	public boolean editMultiPayment(BAMMultiPayment multipayment, String name, String purpose, String searchName, String searchPurpose)
 	{
-		return controller.addPayment(subaccount, name, amount, date, purpose, billNr, transaction);
+		if( JOptionPane.showConfirmDialog( getActiveFrame(), 
+				guiSettings.getPhrase("EDIT_MULTIPAYMENT")+ " " + multipayment.getName() + " - " + multipayment.getPurpose() + " ?", 
+				guiSettings.getPhrase("EDIT_MULTIPAYMENT"), 
+				JOptionPane.YES_NO_OPTION, 
+				JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+			return controller.editMultiPayment(multipayment, name, purpose, searchName, searchPurpose);
+		return false;
 	}
-
-
 	@Override
 	public boolean removeTransactionfromMultiPayment ( BAMMultiPayment multipayment, BAMSubPayment payment )
 	{
-		if( JOptionPane.showConfirmDialog( mainFrame, 
+		if( JOptionPane.showConfirmDialog( getActiveFrame(), 
 				guiSettings.getPhrase("REM_TRANSACT_MSG"), 
 				guiSettings.getPhrase("REM_TRANSACT_TTL"), 
 				JOptionPane.YES_NO_OPTION, 
@@ -92,7 +101,7 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 	{
 		if( ! BAMFormats.isBigDec( amount ) )
 		{
-			JOptionPane.showMessageDialog(mainFrame, 
+			JOptionPane.showMessageDialog(getActiveFrame(), 
 					guiSettings.getPhrase("BIGDEC_PARSE_ERR_MSG"), 
 					guiSettings.getPhrase("BIGDEC_PARSE_ERR_TTL"), 
 					JOptionPane.ERROR_MESSAGE);
@@ -104,15 +113,15 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 
 	@Override
 	public boolean deleteMultiPayment(BAMMultiPayment multipayment) {
-		if( !multipayment.getPayments().isEmpty() )
+		if( multipayment.getPaymentCount() != 0 )
 		{
-			JOptionPane.showMessageDialog(mainFrame, 
+			JOptionPane.showMessageDialog(getActiveFrame(), 
 					guiSettings.getPhrase("MP_NONEMPTY_MSG"),
 					guiSettings.getPhrase("MP_NONEMPTY_TTL"), 
 					JOptionPane.ERROR_MESSAGE );
 			return false;
 		}
-		if( JOptionPane.showConfirmDialog(mainFrame,
+		if( JOptionPane.showConfirmDialog(getActiveFrame(),
 				guiSettings.getPhrase("CONF_DEL_MP_MSG"), 
 				guiSettings.getPhrase("CONF_DEL_MP_TTL"), 
 				JOptionPane.YES_NO_OPTION, 
@@ -125,7 +134,7 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 
 	@Override
 	public boolean setUserData(String figo_Account, String figo_PW, String bank_pin) {
-		if( JOptionPane.showConfirmDialog(mainFrame, 
+		if( JOptionPane.showConfirmDialog(getActiveFrame(), 
 				guiSettings.getPhrase("SET_USER_MSG"), 
 				guiSettings.getPhrase("SET_USER_TTL"), 
 				JOptionPane.YES_NO_OPTION, 
@@ -139,7 +148,7 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 
 	@Override
 	public boolean addMultiPayment(BAMSubAccount subaccount, String name, String purpose, String searchName, String searchPurpose) {
-		if( JOptionPane.showConfirmDialog(mainFrame, 
+		if( JOptionPane.showConfirmDialog(getActiveFrame(), 
 				guiSettings.getPhrase("ADD_MP_MSG_1") + name + " - " + purpose + guiSettings.getPhrase("ADD_MP_MSG_2") + subaccount + "?" , 
 				guiSettings.getPhrase("ADD_MP_TTL"), 
 				JOptionPane.YES_NO_OPTION, 
@@ -148,5 +157,25 @@ public class BAMDecoratorConfirmMsg extends BAMAbstractDecorator {
 			return controller.addMultiPayment(subaccount, name, purpose, searchName, searchPurpose);
 		}
 		return false;
+	}
+
+	@Override
+	protected void onOpen(BAMSwingFrame frame)
+	{
+		frameList.add(frame);
+	}
+
+	@Override
+	protected void onClose(BAMSwingFrame frame)
+	{
+		frameList.remove(frame);
+	}
+	
+	private Component getActiveFrame()
+	{
+		for(BAMSwingFrame frame : frameList)
+			if(frame.isActive())
+				return frame;
+		return null;
 	}
 }

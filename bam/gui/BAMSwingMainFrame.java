@@ -34,7 +34,6 @@ public class BAMSwingMainFrame extends BAMSwingFrame {
 			}
 		});
 		drawAll();
-		setComponents(null,west,center,null,null);
 		draw();
 	}
 
@@ -42,6 +41,7 @@ public class BAMSwingMainFrame extends BAMSwingFrame {
 	public void draw()
 	{
 		setJMenuBar( new BAMSwingMenuBar(controller,user) );
+		setComponents(null,west,center,null,null);
 		super.draw();
 	}
 	
@@ -90,7 +90,7 @@ public class BAMSwingMainFrame extends BAMSwingFrame {
 				if( BAMGenericPayment.class.isAssignableFrom( o.getClass() ) )
 				{
 					if( e.getClickCount() > 1)
-						controller.openPopup( (BAMListable) o );
+						controller.openPopup( (BAMGenericPayment) o );
 				}
 				else
 				{

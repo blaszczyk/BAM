@@ -3,89 +3,101 @@ package bam.gui.tools;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import bam.controller.BAMController;
 import bam.core.BAMListable;
+import bam.gui.BAMSwingPopupMenu;
 import bam.gui.settings.BAMFontSet;
 import bam.gui.settings.BAMGUISettings;
 import bam.tools.ButtonColumn;
 
-@SuppressWarnings("serial")
-public class BAMListableTable extends JTable {
+@SuppressWarnings({"serial","unchecked"})
+public class BAMListableTable<T extends BAMListable> extends JTable implements MouseListener{
 
 	private static BAMGUISettings guiSettings = BAMGUISettings.getInstance();
+	private BAMController controller;
 	
-	private List<? extends BAMListable> list;
+	
+	@SuppressWarnings("hiding")
+	private class Column<T>{
+		private String key;
+		private Action action;
+		private int width = -1;
+		
+		public Column( String key ) 
+		{
+			this.key = key;
+		}
+		public Action getAction(){return action;}
+		public void setAction(Action action){this.action = action;}
+		public int getWidth(){return width;}
+		public void setWidth(int width){this.width = width;}
+		@SuppressWarnings("unused")
+		public String getKey(){return key;}
+	}
+
+	private List<BAMListable> list;
+	private String[] keys;
 	private BAMListableTableModel tableModel;
+	
 	private Comparator<BAMListable> comparator;
 	private boolean sortBackwards = false;
 	
-	private class ColumnButton{
-			private Action action;
-			private int column;
-			public ColumnButton( Action action, int column) {
-				this.action = action;
-				this.column = column;
-			}		
-			public Action getAction() { return action;	}
-			public int getColumn() { return column; }
-	}
-	
-	private int[] columnWidths;
-	private List<ColumnButton> buttons = new ArrayList<>();
-	private Action mouseAction;
-	
-	public BAMListableTable( List<? extends BAMListable> list, String... keys ) {
-		super( new BAMListableTableModel(list,keys) );
-		this.setModel( tableModel = new BAMListableTableModel(list,keys) );
-		this.list = list;
-		this.setRowHeight( guiSettings.getFont( BAMFontSet.TABLE).getSize() + 2 );
-		this.getTableHeader().addMouseListener( new MouseAdapter(){
-			@SuppressWarnings("unchecked")
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int column = columnAtPoint(e.getPoint());
-				Class<?> type =  tableModel.getColumnClass(column);
-				if( Comparable.class.isAssignableFrom( type ) )
-					if( ! tableModel.isCellEditable(0, column) )
-					{
-						sortBackwards = ! sortBackwards;
-						String key = tableModel.getColumnKey(column);
-						comparator = (l1, l2) -> 
-								((Comparable<Object>) l1.getValue(key)).compareTo(l2.getValue(key)) * (sortBackwards ? -1 : 1);
-						BAMListableTable.this.list.sort(comparator);
-						BAMListableTable.this.setModel( tableModel = new BAMListableTableModel(list,keys) );
-						draw();
-					}
-		}; }); 
+	private Column<T>[] columns;
+	private boolean popupMenuEnabled = true;
+	private Action doubleClickAction;
+
+	public BAMListableTable( Iterable<T> container, BAMController controller, String... keys ) {
+		this.keys = keys;
+		this.controller = controller;
+		
+		columns = new Column[keys.length];
+		for(int i = 0; i < keys.length; i++)
+			columns[i] = new Column<T>(keys[i]);	
+		
+		list = new ArrayList<>();
+		Iterator<T> iterator = container.iterator();
+		while(iterator.hasNext())
+			list.add(iterator.next());
+		
+		setModel( tableModel = new BAMListableTableModel(list,keys) );
+		setRowHeight( guiSettings.getFont( BAMFontSet.TABLE).getSize() + 5 );
+		getTableHeader().addMouseListener( this);		
+		addMouseListener(this);
 	}
 	
 	public void setButtonColumn( int columnIndex, Action action)
 	{
-		buttons.add( new ColumnButton( action, columnIndex ) );
+		columns[columnIndex].setAction(action);
 	}
 	
-	public void setButtonColumnMouse( int columnIndex, Action action)
+	public void setDoubleClickAction( Action action )
 	{
-		setButtonColumn(columnIndex, action);
-		mouseAction = action;
+		doubleClickAction = action;
+	}
+	
+	public void setPopupMenuEnabled( boolean popupMenuEnabled)
+	{
+		this.popupMenuEnabled = popupMenuEnabled;
 	}
 
 
 	public void setColumnWidths( int ...widths)
 	{
-		columnWidths = widths;
+		int maxIndex = Math.min( widths.length, columns.length);
+		for(int i = 0; i < maxIndex; i++)
+			columns[i].setWidth(widths[i]);
 	}
 	
 
@@ -115,32 +127,88 @@ public class BAMListableTable extends JTable {
 	
 	public void draw()
 	{
-		addMouseListener( new MouseAdapter(){
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if( e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1  )
-					if( getSelectedRow() >= 0 )
-					{
-						ActionEvent ee = new ActionEvent( list.get(  getSelectedRow() ), 1337, "openPopup");	
-						mouseAction.actionPerformed(ee);
-					}
-			}
-		});
-		for( ColumnButton b : buttons)
+		for( int i = 0; i < columns.length; i++)
 		{
-			Action click = new AbstractAction(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					ActionEvent ee = new ActionEvent( list.get( Integer.valueOf( e.getActionCommand() ) ), 1337, "openPopup");				
-					b.getAction().actionPerformed( ee );
-				}
-			};
-			new ButtonColumn( this, click, b.getColumn() ,guiSettings.getFont( BAMFontSet.SMALL ));
-		}
-		for( int i = 0; i < columnWidths.length; i++)
-			getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);	
-		for( int i = 0; i < tableModel.getColumnCount(); i++)
+			Column<T> c = columns[i];
+			if( c.getAction() != null )
+			{
+				Action click = new AbstractAction(){
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						ActionEvent ee = new ActionEvent( list.get( Integer.valueOf( e.getActionCommand() ) ), 1337, "openPopup");				
+						c.getAction().actionPerformed( ee );
+					}
+				};
+				new ButtonColumn( this, click, i ,guiSettings.getFont( BAMFontSet.SMALL ));
+			}
+			if( c.getWidth() >= 0 )
+				getColumnModel().getColumn(i).setPreferredWidth(c.getWidth());
 			if( tableModel.getTrueColumnClass(i).equals( BigDecimal.class ) )
 				makeTableNumbersRed(i);
+		}
+	}
+
+	/*
+	 * Mouse Listener Methods
+	 */
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if( e.getComponent() == this )
+		{
+			if( e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1  )
+				if( getSelectedRow() >= 0 )
+				{
+					ActionEvent ee = new ActionEvent( list.get(  getSelectedRow() ), 1337, "openPopup");	
+					doubleClickAction.actionPerformed(ee);
+				}
+		}
+		else if( e.getComponent() == getTableHeader() )
+		{
+			int column = columnAtPoint(e.getPoint());
+			Class<?> type =  tableModel.getColumnClass(column);
+			if( Comparable.class.isAssignableFrom( type ) )
+				if( ! tableModel.isCellEditable(0, column) )
+				{
+					sortBackwards = ! sortBackwards;
+					String key = tableModel.getColumnKey(column);
+					comparator = (l1, l2) -> 
+							((Comparable<Object>) l1.getValue(key)).compareTo(l2.getValue(key)) * (sortBackwards ? -1 : 1);
+					BAMListableTable.this.list.sort(comparator);
+					BAMListableTable.this.setModel( tableModel = new BAMListableTableModel(list,keys) );
+					draw();
+				}
+		}
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+		if(e.isPopupTrigger())
+			doPopup(e);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+		if(e.isPopupTrigger())
+			doPopup(e);
+	}
+	private void doPopup(MouseEvent e)
+	{
+		if(!popupMenuEnabled)
+			return;
+		int row = rowAtPoint( e.getPoint() );
+		JPopupMenu menu = new BAMSwingPopupMenu(list.get(row), controller);
+		menu.show(this, e.getX(), e.getY());
 	}
 }

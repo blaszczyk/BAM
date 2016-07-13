@@ -28,16 +28,9 @@ public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListen
 	private Action view = new AbstractAction(){
 		@Override 
 		public void actionPerformed(ActionEvent e) {
-			controller.openPopup( (BAMListable) e.getSource() );
+			controller.openPopup( (BAMGenericPayment) e.getSource() );
 		}
 	};		
-	
-	private Action delete = new AbstractAction(){
-		@Override 
-		public void actionPerformed(ActionEvent e) {
-			controller.deletePayment((BAMPayment) e.getSource() );
-		}
-	};
 	
 	public BAMSwingSubAccountPanel(  BAMSubAccount subaccount, BAMController controller) {
 		this.subaccount = subaccount;
@@ -92,19 +85,18 @@ public class BAMSwingSubAccountPanel extends JPanel implements BAMModifiedListen
 
 
 	private void drawTableView(){
-		BAMListableTable mptable = new BAMListableTable( subaccount.getMultiPayments(), 
+		BAMListableTable<BAMMultiPayment> mptable = new BAMListableTable<>( subaccount.getMultiPayments(), controller,
 				BAMMultiPayment.NAME, BAMMultiPayment.PURPOSE, BAMMultiPayment.TOTAL_AMOUNT, 
-				BAMMultiPayment.LAST_AMOUNT, BAMMultiPayment.LAST_DATE, BAMMultiPayment.NR_TRANSACTIONS, "VIEW");
+				BAMMultiPayment.LAST_AMOUNT, BAMMultiPayment.LAST_DATE, BAMMultiPayment.NR_TRANSACTIONS);
 		mptable.setColumnWidths( 200,150,100,100,100,150,100);
-		mptable.setButtonColumnMouse(6, view);
+		mptable.setDoubleClickAction(view);
 		mptable.draw();
 		
-		BAMListableTable ptable = new BAMListableTable( subaccount.getPayments(), 
+		BAMListableTable<BAMPayment> ptable = new BAMListableTable<>( subaccount.getPayments(), controller,
 				BAMPayment.NAME, BAMPayment.DATE, BAMPayment.AMOUNT, 
-				BAMPayment.PURPOSE, BAMPayment.BILL_NR, "VIEW", "DELETE" );
+				BAMPayment.PURPOSE, BAMPayment.BILL_NR);
 		ptable.setColumnWidths(150,100,100,250,100,100,100);
-		ptable.setButtonColumnMouse(5, view);
-		ptable.setButtonColumn(6, delete);
+		ptable.setDoubleClickAction(view);
 		ptable.draw();
 		
 		tablePanel.setVisible(false);

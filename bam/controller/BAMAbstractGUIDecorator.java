@@ -3,8 +3,7 @@ package bam.controller;
 import java.util.List;
 import java.util.Locale;
 
-import bam.core.BAMListable;
-import bam.core.BAMPayment;
+import bam.core.BAMGenericPayment;
 import bam.core.BAMTransaction;
 import bam.core.BAMUser;
 import bam.gui.settings.BAMFontSet;
@@ -23,8 +22,8 @@ public abstract class BAMAbstractGUIDecorator extends BAMAbstractDecorator {
 	}
 
 	@Override
-	public BAMSwingFrame openPopup( BAMListable listable ) {
-		return doOnOpen( controller.openPopup( listable ) );
+	public BAMSwingFrame openPopup( BAMGenericPayment gPayment ) {
+		return doOnOpen( controller.openPopup( gPayment ) );
 	}
 
 	@Override
@@ -48,8 +47,8 @@ public abstract class BAMAbstractGUIDecorator extends BAMAbstractDecorator {
 	}
 
 	@Override
-	public BAMSwingFrame openEditPayment(BAMPayment payment) {
-		return doOnOpen( controller.openEditPayment(payment) );
+	public BAMSwingFrame openEditFrame(BAMGenericPayment gPayment) {
+		return doOnOpen( controller.openEditFrame(gPayment) );
 	}
 	
 	@Override

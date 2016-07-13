@@ -5,14 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import bam.core.BAMAccount;
-import bam.core.BAMListable;
-import bam.core.BAMMultiPayment;
-import bam.core.BAMPayment;
-import bam.core.BAMSubAccount;
-import bam.core.BAMSubPayment;
-import bam.core.BAMTransaction;
-import bam.core.BAMUser;
+import bam.core.*;
 import bam.gui.settings.BAMFontSet;
 import bam.gui.tools.BAMSwingFrame;
 
@@ -33,6 +26,7 @@ public interface BAMController{
 	
 	public boolean addTransactionToMultiPayment( BAMMultiPayment multipayment , BAMTransaction transaction );
 	public boolean removeTransactionfromMultiPayment ( BAMMultiPayment multipayment, BAMSubPayment payment );
+	public boolean editMultiPayment(BAMMultiPayment multipayment, String name, String purpose, String searchName, String searchPurpose);
 	public boolean setAmountInMultiPayment( BAMMultiPayment multipayment, BAMSubPayment payment, String amount );
 	public boolean deleteMultiPayment( BAMMultiPayment multipayment);
 	
@@ -49,12 +43,12 @@ public interface BAMController{
 	 */
 
 	public BAMSwingFrame openMainFrame( );
-	public BAMSwingFrame openPopup( BAMListable listable );
+	public BAMSwingFrame openPopup( BAMGenericPayment gPayment );
 	public BAMSwingFrame openPopup( String transaction_id );
 	public BAMSwingFrame openUpdateFrame();
 	public BAMSwingFrame openStoreFrame( BAMTransaction t);
 	public BAMSwingFrame openStoreFrame( List<BAMTransaction> t);
-	public BAMSwingFrame openEditPayment( BAMPayment payment );
+	public BAMSwingFrame openEditFrame( BAMGenericPayment gPayment);
 	public BAMSwingFrame openSettings();
 	public BAMSwingFrame openSetupUser( BAMUser user );
 

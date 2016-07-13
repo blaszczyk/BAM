@@ -7,7 +7,7 @@ import java.util.Map;
 
 import me.figo.models.Transaction;
 
-public class BAMTransaction extends BAMAbstractListable {
+public class BAMTransaction extends BAMAbstractListable implements BAMGenericPayment {
 
 
 	public static final String NAME = "NAME";

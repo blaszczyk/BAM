@@ -1,5 +1,7 @@
 package bam.gui.settings;
 
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -14,6 +16,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 
 import bam.core.BAMModifyableListable;
@@ -48,7 +51,15 @@ public class BAMGUISettings extends BAMModifyableListable
 
 	private BAMGUISettings()
 	{
-
+		try
+		{
+			UIManager.setLookAndFeel( new NimbusLookAndFeel());
+		}
+		catch (UnsupportedLookAndFeelException e)
+		{
+			e.printStackTrace();
+		}
+		
 		BAMFontSet[] fontsetsArray = { BAMFontSet.SMALL_SET, BAMFontSet.MEDIUM_SET, BAMFontSet.BIG_SET };
 		fontsets = Arrays.asList(fontsetsArray);
 
@@ -57,9 +68,6 @@ public class BAMGUISettings extends BAMModifyableListable
 
 		border = BorderFactory.createLineBorder(new Color(0, 0, 0, 0), 5);
 
-		// icon = ICON2;
-		// setFontSet( BAMFontSet.MEDIUM_SET );
-		// setLocale( Locale.GERMAN );
 	}
 
 	public BufferedImage getIcon()
@@ -123,7 +131,7 @@ public class BAMGUISettings extends BAMModifyableListable
 		UIManager.put("List.font", fontSet.getFont(BAMFontSet.MEDIUM));
 		UIManager.put("ComboBox.font", fontSet.getFont(BAMFontSet.MEDIUM));
 		UIManager.put("TabbedPane.font", fontSet.getFont(BAMFontSet.MEDIUM));
-
+		UIManager.put("PopupMenu.font", fontSet.getFont(BAMFontSet.MEDIUM));
 	}
 
 	public Font getFont(int font)

@@ -76,7 +76,7 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 	private Action view = new AbstractAction(){
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			controller.openPopup( (BAMListable)e.getSource() );
+			controller.openPopup( (BAMGenericPayment)e.getSource() );
 		}			
 	};
 
@@ -213,10 +213,10 @@ public class BAMSwingAccountPanel extends JPanel implements BAMModifiedListener 
 							tList.add(t);
 		tList.sort( comparator );
 		
-		BAMListableTable table = new BAMListableTable( tList, BAMTransaction.NAME, BAMTransaction.DATE, 
-				BAMTransaction.AMOUNT, BAMTransaction.PURPOSE, "VIEW" );
-		table.setColumnWidths(150,70,70,350,100);
-		table.setButtonColumnMouse(4, view);
+		BAMListableTable<BAMTransaction> table = new BAMListableTable<>( tList, controller, BAMTransaction.NAME, BAMTransaction.DATE, 
+				BAMTransaction.AMOUNT, BAMTransaction.PURPOSE);
+		table.setColumnWidths(150,70,70,350);
+		table.setDoubleClickAction(view);
 		table.draw();
 		
 		center.setVisible(false);

@@ -66,5 +66,6 @@ public class BAMGraphics
 	{
 		return new ImageIcon(getImage(filename));
 	}
+	
 
 }

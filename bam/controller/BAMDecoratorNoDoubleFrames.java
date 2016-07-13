@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import bam.core.BAMListable;
-import bam.core.BAMPayment;
+import bam.core.BAMGenericPayment;
 import bam.core.BAMTransaction;
 import bam.core.BAMUser;
 import bam.gui.*;
@@ -34,8 +33,8 @@ public class BAMDecoratorNoDoubleFrames extends BAMAbstractDecorator {
 	}
 
 	@Override
-	public BAMSwingFrame openPopup( BAMListable listable ) {
-		BAMSwingFrame frame = controller.openPopup( listable ) ;
+	public BAMSwingFrame openPopup( BAMGenericPayment gPayment ) {
+		BAMSwingFrame frame = controller.openPopup( gPayment ) ;
 		frames.add(frame);
 		return frame;
 	}
@@ -49,7 +48,7 @@ public class BAMDecoratorNoDoubleFrames extends BAMAbstractDecorator {
 		
 	@Override
 	public BAMSwingFrame openUpdateFrame() {
-		BAMSwingFrame frame = findFrame( BAMSwingFigo.class);
+		BAMSwingFrame frame = findFrame( BAMSwingFigoFrame.class);
 		if( frame == null)
 		{
 			frame = controller.openUpdateFrame();
@@ -62,7 +61,7 @@ public class BAMDecoratorNoDoubleFrames extends BAMAbstractDecorator {
 
 	@Override
 	public BAMSwingFrame openStoreFrame(BAMTransaction t) {
-		BAMSwingFrame frame = findFrame( BAMSwingStoreTransaction.class);
+		BAMSwingFrame frame = findFrame( BAMSwingStoreTransactionFrame.class);
 		if( frame == null)
 		{
 			frame = controller.openStoreFrame(t);
@@ -71,14 +70,14 @@ public class BAMDecoratorNoDoubleFrames extends BAMAbstractDecorator {
 		else
 		{
 			frame.requestFocus();
-			((BAMSwingStoreTransaction)frame).addTransaction(t);
+			((BAMSwingStoreTransactionFrame)frame).addTransaction(t);
 		}
 		return frame;
 	}
 
 	@Override
 	public BAMSwingFrame openStoreFrame(List<BAMTransaction> tList) {
-		BAMSwingFrame frame = findFrame( BAMSwingStoreTransaction.class);
+		BAMSwingFrame frame = findFrame( BAMSwingStoreTransactionFrame.class);
 		if( frame == null)
 		{
 			frame = controller.openStoreFrame(tList);
@@ -88,21 +87,21 @@ public class BAMDecoratorNoDoubleFrames extends BAMAbstractDecorator {
 		{
 			frame.requestFocus();
 			for( BAMTransaction t : tList)
-				((BAMSwingStoreTransaction)frame).addTransaction(t);
+				((BAMSwingStoreTransactionFrame)frame).addTransaction(t);
 		}
 		return frame;
 	}
 
 	@Override
-	public BAMSwingFrame openEditPayment(BAMPayment payment) {
-		BAMSwingFrame frame = controller.openEditPayment(payment);
+	public BAMSwingFrame openEditFrame(BAMGenericPayment gPayment ) {
+		BAMSwingFrame frame = controller.openEditFrame(gPayment);
 		frames.add(frame);
 		return frame;
 	}
 	
 	@Override
 	public BAMSwingFrame openSettings() {
-		BAMSwingFrame frame = findFrame( BAMSwingSettings.class);
+		BAMSwingFrame frame = findFrame( BAMSwingSettingsFrame.class);
 		if( frame == null)
 		{
 			frame = controller.openSettings();
@@ -115,7 +114,7 @@ public class BAMDecoratorNoDoubleFrames extends BAMAbstractDecorator {
 
 	@Override
 	public BAMSwingFrame openSetupUser(BAMUser user)  {
-		BAMSwingFrame frame = findFrame( BAMSwingSetupUser.class);
+		BAMSwingFrame frame = findFrame( BAMSwingSetupUserFrame.class);
 		if( frame == null)
 		{
 			frame = controller.openSetupUser(user);

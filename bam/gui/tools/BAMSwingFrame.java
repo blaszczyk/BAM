@@ -137,7 +137,7 @@ public abstract class BAMSwingFrame extends JFrame implements BAMModifiedListene
 		drawComponents(true,true,true,true,true);
 	}
 
-	protected void draw()
+	public void draw()
 	{
 		pack();
 		if( firstDraw ) {
