@@ -9,6 +9,9 @@
 # 
 # 
 lib/
+src/me
+src/com
+src/org
 data/
 users/
 #

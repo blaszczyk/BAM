@@ -10,7 +10,7 @@ public class BAMFormats
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
 	private static DecimalFormat decimalFileFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 	private static DateFormat dateDisplayFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-	private static DateFormat dateSaveFormat = new SimpleDateFormat("dd.MM.yyyy");
+	private static DateFormat dateSaveFormat = new SimpleDateFormat("dd-MMM-yyyy");
 
 	private BAMFormats()
 	{

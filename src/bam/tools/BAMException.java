@@ -1,4 +1,4 @@
-package bam.tools;
+ package bam.tools;
 
 public class BAMException extends Exception {
 	
