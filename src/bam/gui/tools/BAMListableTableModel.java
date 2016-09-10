@@ -87,13 +87,15 @@ public class BAMListableTableModel implements TableModel {
 		if( item.getClass(key) == Date.class )
 		{
 			Date date = (Date) item.getValue(key);
-			if( date.getTime() < 1 )
+			if(date == null || date.getTime() < 1 )
 				return "";
 			return " " + BAMFormats.dateFormat( date ) + " ";
 		}
 		if( item.getClass(key) == BigDecimal.class )
 		{
 			BigDecimal no = (BigDecimal) item.getValue(key);
+			if(no == null)
+				return "-";
 			return BAMFormats.currencyFormat(no) + " ";
 			
 		}

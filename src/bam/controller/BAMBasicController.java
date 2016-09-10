@@ -44,7 +44,7 @@ public class BAMBasicController implements BAMController
 	public boolean loadUser(){
 		try {
 			BAMListableJson.loadListable(user, "users/" + user + ".bam");
-			user.setParents();
+			user.initialise();
 		} catch (BAMException be) {
 			be.printStackTrace();
 			JOptionPane.showMessageDialog( null, 

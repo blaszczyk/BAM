@@ -65,6 +65,8 @@ public class BAMSwingTwoTable extends JPanel {
 	{
 		JLabel number = new JLabel( BAMFormats.currencyFormat(right) + append );
 		number.setFont(font);
+		if(right == null)
+			right = BigDecimal.ZERO;
 		if( right.signum() < 0 )
 			number.setForeground( Color.RED );
 		else

@@ -99,10 +99,15 @@ public class BAMUser extends BAMModifyableListable implements BAMListable{
 		return false;
 	}
 
-	public void setParents()
+	public void initialise()
 	{
 		for( BAMAccount a : getAccounts())
+		{
 			a.setParents();
+			for(BAMSubAccount sa : a.getSubAccounts())
+				for(BAMMultiPayment mp : sa.getMultiPayments())
+					mp.computeInternalValues();
+		}
 	}
 	/*
 	 * Listable Methods

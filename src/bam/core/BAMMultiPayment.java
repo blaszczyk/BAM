@@ -98,11 +98,12 @@ public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPa
 		return getPayments().get(0);
 	}
 	
-	private void computeInternalValues()
+	public void computeInternalValues()
 	{
 		BigDecimal sum = BigDecimal.ZERO;
 		for( BAMSubPayment p : getPayments() )
 			sum = sum.add(p.getAmount());
+		setValue( NR_TRANSACTIONS, getPaymentCount()  );
 		setValue( TOTAL_AMOUNT, sum );
 		setValue( LAST_DATE, getLastPayment().getDate() );
 		setValue( LAST_AMOUNT, getLastPayment().getAmount() );
@@ -198,5 +199,6 @@ public class BAMMultiPayment extends BAMAbstractListable implements BAMGenericPa
 	protected Map<String, Class<?>> getClassMap() {
 		return multipaymentClassMap;
 	}
+
 
 }

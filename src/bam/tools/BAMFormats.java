@@ -57,6 +57,8 @@ public class BAMFormats
 
 	public static String currencyFormat(BigDecimal in)
 	{
+		if(in == null)
+			return "-";
 		return currencyFormat.format(in.doubleValue());
 	}
 
